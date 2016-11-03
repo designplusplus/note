@@ -1,0 +1,385 @@
+＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃
+[SQL基礎]
+create database test1;
+drop database test1;
+create table emp(ename varchar(10), hiredate date, sal decimal(10,2), deptno int(2));
+desc emp;
+show create table emp; 顯示 emp 詳細訊息
+drop table emp;
+alter table emp modify ename varchar(20) [first | after];
+alter table emp add column age int(3); 加在最後
+alter table emp drop column age;
+alter table emp change age age1 int(4) [first | after];
+alter table emp add birth date first;
+alter table emp add birth date after ename;
+alter table emp rename emp1; 改table名
+insert into emp […..] values ('lisa', '1984-10-22', 3000, 2);
+update emp set ename='edwin' where deptno=100000;
+delete from emp where ename='edwin';
+select * from emp order by sal desc limit 1,3; limit 第1參數代表從第二筆資料開始算
+select count(1) from emp; 取得資料筆數
+select deptno, count(1) from emp where group by deptno; 取得各部門人數 
+select deptno, count(1) from emp where group by deptno with rollup; 取得各部門人數與總人數
+select deptno, count(1) from emp where group by deptno having count(1)>1; 人數大於1的部門
+select sum(sal), max(sal), min(sal) from emp; 簡易函式運用
+select name, deptname from emp, dept where emp.deptno=dept.deptno; 表連接
+select name, deptname from emp left join dept on emp.deptno=dept.deptno;   
+select * from emperor where deptno in (select deptno from dept); 子查詢
+grant select, insert on test1.* to 'edwin'@'localhost' identified by ‘password’; 新增user
+revoke insert on test1.* from 'edwin'@'localhost’; 取消insert權限
+? contents; ? data types; ? int; 查詢功能
+? show; ? create; 查看指令功能 
+p55. 特殊用法
+＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃
+[SQL支援的資料類型]
+create table t1 (id int, id2 int(5));
+insert into t1 values(1,1)
+select * from t1;
++------+------+
+| id   | id2  |
++------+------+
+|    1 |    1 |
++------+------+
+alter table t1 modify id int zerofill; 用zerofill 會自動加上unsigned 
+alter table t1 modify id2 int(5) zerofill;
+select * from t1;
++-------------+-------+
+| id          |   id2 |
++-------------+-------+
+| 0000000001  | 00001 |
++-------------+-------+
+insert into t1 values( 10, 1111111);
+select * from t1;
++-------------+-------+
+| id          |   id2 |
++-------------+-------+
+| 0000000010  |1111111| 超過5位數仍可儲存資料
++-------------+-------+s
+======
+create table ai (id int auto_increment not null primary key);
+desc ai;
++-------+---------+------+-----+---------+----------------+
+| Field | Type    | Null | Key | Default | Extra          |
++-------+---------+------+-----+---------+----------------+
+| id    | int(11) | NO   | PRI | NULL    | auto_increment |
++-------+---------+------+-----+---------+----------------+
+=======
+float , double 會四捨五入
+decimal 依照設定範圍顯示，適合用貨幣
+create table t2 (
+	id1 float(5,2) default NULL,
+	id2 double(5,2) default NULL,
+	id3 decimal(5,2) default NULL
+)
+insert into t2 values (1.234, 1.234, 1.234);
+select * from t2;
++------+------+------+
+| id1  | id2  | id3  |
++------+------+------+
+| 1.23 | 1.23 | 1.23 |
++------+------+------+
+alter table t2 modify id1 float;
+alter table t2 modify id2 double;
+alter table t2 modify id3 decimal;
+insert into t2 values (1.234, 1.234, 1.234);
+show warnings;
++-------+------+------------------------------------------+
+| Level | Code | Message                                  |
++-------+------+------------------------------------------+
+| Note  | 1265 | Data truncated for column 'id3' at row 1 |        因為decimal預設(10,0)
++-------+------+------------------------------------------+
+select * from t2;
++-------+-------+------+
+| id1   | id2   | id3  |
++-------+-------+------+
+|     1 |  1.23 |    1 |
+| 1.234 | 1.234 |    1 |
++-------+-------+------+
+=======
+bit, hex
+=======
+如果常要插入資料或更新日期請用TIMESTAMP; 自動設置系統時間,年份只到2038-01-19 11:14:08
+手動插入用DATETIME;年份年份可到9999
+皆顯示 YYYY-MM-DD HH:MM:SS
+create table t(y year);
+desc t;
++-------+---------+------+-----+---------+-------+
+| Field | Type    | Null | Key | Default | Extra |
++-------+---------+------+-----+---------+-------+
+| y     | year(4) | YES  |     | NULL    |       |                     1901~2155
++-------+---------+------+-----+---------+-------+
+=======
+char 0~255
+varchar 0~65535 
+create table str (c1 char(4), c2 varchar(4)); 長度需指定跟int不一樣
+insert into str values(1000,1000);
+insert into str values(10000,10000); //長度5出錯長度只能到4
+=======
+create table sex (gender enum('M','F')); //本範例有2個成員，可以存到65535個成員
+insert into sex values('M'),('1'),('f'),(NULL);
+select * from sex;
++--------+
+| gender |
++--------+
+| M      |
+| M      |
+| F      |
+| NULL   |
++--------+
+=======
+create table setdemo (col set('a','b','c','d')); //最多64成員
+insert into setdemo values('a,b'),('a,d,a'),('a,b'),('a,c'),('a');
+select * from setdemo;
++------+
+| col  |
++------+
+| a,b  |
+| a,d  |
+| a,b  |
+| a,c  |
+| a    |
++------+
+＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃
+[SQL 運算符號]
+select 3%2, mod(3,2); 一樣
+select 10 between 10 and 20; 1
+select 1 in (1,2,3); 1
+select 0 in null, null is null; 0 1
+select 123456 like ‘123%’; 1
+select ‘abcdef’ regex ‘ab’; 1
+not, and, or
+＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃
+[SQL 常用函數]
+select concat('aaa','bbb','ccc'), concat('aaa',null);
++---------------------------+--------------------+
+| concat('aaa','bbb','ccc') | concat('aaa',null) |
++---------------------------+--------------------+
+| aaabbbccc                 | NULL               |
++---------------------------+--------------------+
+select insert('beijing2016you',12,3,'me');
++------------------------------------+
+| insert('beijing2016you',12,3,'me') |
++------------------------------------+
+| beijing2016me                      |
++------------------------------------+
+select lower('A'), upper('a');
++------------+------------+
+| lower('A') | upper('a') |
++------------+------------+
+| a          | A          |
++------------+------------+
+select left('12345678',2), right('12345678',3);
++--------------------+---------------------+
+| left('12345678',2) | right('12345678',3) |
++--------------------+---------------------+
+| 12                 | 678                 |
++--------------------+---------------------+
+select lpad('12345',10,'0'), rpad('12345',10,'0');
++----------------------+----------------------+
+| lpad('12345',10,'0') | rpad('12345',10,'0') |
++----------------------+----------------------+
+| 0000012345           | 1234500000           |
++----------------------+----------------------+
+select ltrim('     999'), rtrim('999     ');
++-------------------+-------------------+
+| ltrim('     999') | rtrim('999     ') |
++-------------------+-------------------+
+| 999               | 999               |
++-------------------+-------------------+
+select repeat('hello ',3);
++--------------------+
+| repeat('hello ',3) |
++--------------------+
+| hello hello hello  |
++--------------------+
+select replace('12345678','345',543);
++-------------------------------+
+| replace('12345678','345',543) |
++-------------------------------+
+| 12543678                      |
++-------------------------------+
+select (strcmp('a','a')=0);
++---------------------+
+| (strcmp('a','a')=0) |
++---------------------+
+|                   1 |
++---------------------+
+select trim(' $111$ ');
++-----------------+
+| trim(' $111$ ') |
++-----------------+
+| $111$           |
++-----------------+
+select abs(-1);
++---------+
+| abs(-1) |
++---------+
+|       1 |
++---------+
+select ceil(-0.8), ceil(0.8);
++------------+-----------+
+| ceil(-0.8) | ceil(0.8) |
++------------+-----------+
+|          0 |         1 |
++------------+-----------+
+select floor(-0.8), floor(0.8);
++-------------+------------+
+| floor(-0.8) | floor(0.8) |
++-------------+------------+
+|          -1 |          0 |
++-------------+------------+
+select mod(3,2);
++----------+
+| mod(3,2) |
++----------+
+|        1 |
++----------+
+select round(0.4), round(0.5), round(0.6);
++------------+------------+------------+
+| round(0.4) | round(0.5) | round(0.6) |
++------------+------------+------------+
+|          0 |          1 |          1 |
++------------+------------+------------+
+select truncate(1.23456,3);
++---------------------+
+| truncate(1.23456,3) |
++---------------------+
+|               1.234 |
++---------------------+
+select curdate();
++------------+
+| curdate()  |
++------------+
+| 2016-11-03 |
++------------+
+select curtime();
++-----------+
+| curtime() |
++-----------+
+| 20:18:35  |
++-----------+
+select now();
++---------------------+
+| now()               |
++---------------------+
+| 2016-11-03 20:18:53 |
++---------------------+
+select unix_timestamp(now());
++-----------------------+
+| unix_timestamp(now()) |
++-----------------------+
+|            1478175565 |
++-----------------------+
+select from_unixtime(1478175565);
++---------------------------+
+| from_unixtime(1478175565) |
++---------------------------+
+| 2016-11-03 20:19:25       |
++---------------------------+
+select year(now()),monthname(now()),week(now()),hour(now()),minute(now());
++-------------+------------------+-------------+-------------+---------------+
+| year(now()) | monthname(now()) | week(now()) | hour(now()) | minute(now()) |
++-------------+------------------+-------------+-------------+---------------+
+|        2016 | November         |          44 |          20 |            21 |
++-------------+------------------+-------------+-------------+---------------+
+select date_format(now(),'%M, %D, %Y');
++---------------------------------+
+| date_format(now(),'%M, %D, %Y') |
++---------------------------------+
+| November, 3rd, 2016             |
++---------------------------------+
+select datediff('2016-11-08',now());
++------------------------------+
+| datediff('2016-11-08',now()) |
++------------------------------+
+|                            5 |
++------------------------------+
+===============================================================
+create table salary (userid int, salary decimal(9,2));
+insert into salary values(1,1000),(2,2000),(3,3000),(4,4000),(5,5000),(1,null);
+select * from salary;
++--------+---------+
+| userid | salary  |
++--------+---------+
+|      1 | 1000.00 |
+|      2 | 2000.00 |
+|      3 | 3000.00 |
+|      4 | 4000.00 |
+|      5 | 5000.00 |
+|      1 |    NULL |
++--------+---------+
+select salary, if(salary>2000,'high','low') from salary;
++---------+------------------------------+
+| salary  | if(salary>2000,'high','low') |
++---------+------------------------------+
+| 1000.00 | low                          |
+| 2000.00 | low                          |
+| 3000.00 | high                         |
+| 4000.00 | high                         |
+| 5000.00 | high                         |
+|    NULL | low                          |
++---------+------------------------------+
+select ifnull(salary,0) from salary;
++------------------+
+| ifnull(salary,0) |
++------------------+
+|          1000.00 |
+|          2000.00 |
+|          3000.00 |
+|          4000.00 |
+|          5000.00 |
+|             0.00 |
++------------------+
+select salary, case when salary<=2000 then 'low' else 'high' end from salary;
++---------+---------------------------------------------------+
+| salary  | case when salary<=2000 then 'low' else 'high' end |
++---------+---------------------------------------------------+
+| 1000.00 | low                                               |
+| 2000.00 | low                                               |
+| 3000.00 | high                                              |
+| 4000.00 | high                                              |
+| 5000.00 | high                                              |
+|    NULL | high                                              |
++---------+---------------------------------------------------+
+select salary, case salary when 1000 then 'low' when 2000 then 'mid' else 'high' end from salary;
++---------+-----------------------------------------------------------------------+
+| salary  | case salary when 1000 then 'low' when 2000 then 'mid' else 'high' end |
++---------+-----------------------------------------------------------------------+
+| 1000.00 | low                                                                   |
+| 2000.00 | mid                                                                   |
+| 3000.00 | high                                                                  |
+| 4000.00 | high                                                                  |
+| 5000.00 | high                                                                  |
+|    NULL | high                                                                  |
++---------+-----------------------------------------------------------------------+
+===============================================================
+select database();
++------------+
+| database() |
++------------+
+| test1      |
++------------+
+select version();
++-----------+
+| version() |
++-----------+
+| 5.6.33    |
++-----------+
+select user();
++----------------+
+| user()         |
++----------------+
+| root@localhost |
++----------------+
+select password('123456');
++-------------------------------------------+
+| password('123456')                        |
++-------------------------------------------+
+| *6BB4837EB74329105EE4568DDA7DC67ED2CA2AD9 |
++-------------------------------------------+
+select md5('123456');
++----------------------------------+
+| md5('123456')                    |
++----------------------------------+
+| e10adc3949ba59abbe56e057f20f883e |
++----------------------------------+
