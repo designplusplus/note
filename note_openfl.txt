@@ -1,0 +1,39 @@
+OpenFL
+ 
+可發布 Native Desktop App, HTML5 Canvas, Flash swf, iOS, Android
+官方網站 http://www.openfl.org/
+
+安裝 haxe 軟體 http://www.openfl.org/learn/docs/getting-started/ 有win, mac, linux 平台可安裝
+haxelib 看看有沒有 haxelib 指令
+
+haxelib setup /usr/local/lib/haxe/lib —mac要執行 其他不用
+chmod 777 /usr/local/lib/haxe/lib —mac要執行 其他不用
+
+haxelib install openfl
+haxelib run openfl setup
+
+openfl 看看有沒有 openfl 指令
+
+cd to/桌面
+openfl create project projName
+cd projName
+
+安裝 haxe 代碼顏色區分組件 haxe-sublime-bundle 到sublime
+===Mac OSX
+cd ~/Library/Application\ Support/Sublime\ Text\ 3/Packages
+git clone https://github.com/clemos/haxe-sublime-bundle.git
+===Linux
+cd ~/.config/sublime-text-3/Packages
+git clone https://github.com/clemos/haxe-sublime-bundle.git
+===Windows - Using git bash
+cd /c/Users/<username>/AppData/Roaming/Sublime\ Text\ 3/Packages
+git clone https://github.com/clemos/haxe-sublime-bundle.git
+
+cd to/桌面
+撰寫 Main.hx
+
+openfl test neko 輸出桌面應用程式 (trace 到 terminal)
+openfl test html5 輸出 html5 Canvas (trace 到 console)
+openfl test flash 輸出 swf (trace 到 terminal)
+
+http://api.openfl.org/ 查閱指令

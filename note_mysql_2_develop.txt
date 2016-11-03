@@ -1,3 +1,5 @@
 ＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃
 [SQL表引擎選擇]
-
+show engines \G;
+alter table t engine=innodb; 更改類型
+show create table t \G;
