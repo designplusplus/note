@@ -1,0 +1,113 @@
+Git
+#############[基礎]#############
+git add test.txt #增加檔案到 git 系統索引
+git status #查看狀態
+git commit -m ’這隻檔案修改什麼’ —author=‘edwin<email@email>’ #寫入檔案到 git 庫
+git commit —amend  -m ’新的說明’ —author=‘edwin<email@email>’#修改-m內容與author內容
+gitk #圖形介面顯示 
+git config -l #顯示所有設定檔內容
+git config —system -l #顯示 etc/gitconfig 內容
+git config —global -l #顯示 home directory 內容
+git config user.name ‘操作者姓名’ #更改操作目錄.git檔案庫config內的user.name
+git config user.email ‘操作者email’  #更改操作目錄.git檔案庫config內的user.email
+git config —global user.name #home directory .gitconfig 的帳戶全域設定user.name
+git config —global user.email #home directory .gitconfig 的帳戶全域設定user.email
+git config —system user.name #etc/gitconfig 的安裝全域設定user.name
+git config —system user.email #etc/gitconfig 的安裝全域設定user.email
+git config —unset user.name #刪除操作目錄.git檔案庫config內的 user.name
+git config —unset user.email #刪除操作目錄.git檔案庫config內的 user.email
+git config alias.con ‘config -l’; git con #指令別名 會寫入 操作目錄.git檔案庫config內
+git config —unset alias.con #刪除指令別名
+git diff #查看有無修改檔案 直接看紅-綠+就好
+git config --global diff.tool kdiff3 #設定 kdiff3 為檔案比對工具
+git config --global difftool.kdiff3.cmd "/Applications/kdiff3.app/Contents/MacOS/kdiff3 \"\$LOCAL\" \"\$REMOTE\"" #設定檔案比對工具路徑
+git config —global difftool.prompt false #終端不顯示詢問開啟應用程式
+git difftool #執行應用程式
+touch .gitignore 建立忽略檔
+.gitignore 內容如下——————
+*.txt #忽略所有txt檔
+!note.txt #但是note.txt不包括
+——————————————
+＠git init之後第一個檔案 add檔案想反悔但是還沒commit，可以 git rm —cached 檔名
+＠第二個檔案 add檔案想反悔但是之前已經 commit 過第一個檔案，可以 git reset HEAD 檔名
+＠新增檔案沒 add 時執行 git rm 檔名不通過，因為避免遺失。所以 commit 過才能刪資料夾檔案，然後commit，看gitk之後還可以救回檔案
+git rm —cached 檔名，讓檔案unstage但不從資料夾中刪檔
+git log #另一種 git表現方式 可加參數 —graph,  —oneline
+git show HEAD #顯示最新commit資訊
+git show HEAD^ #顯示上一層節點
+git show HEAD~1 #顯示上1層節點 
+git show HEAD~2 #顯示上2層節點 
+git show HEAD #可以寫成 git show @
+git show xxx.txt #顯示該檔案最新 commit
+git tag WOW c0e53; git show WOW #自訂標籤
+git tag -d WOW #刪除標籤
+git reset --soft @~1 #只有檔案庫資料會變更，變成未 commit 狀態 (commit前狀態) 
+git reset --mixed @~1 #回到前一個狀態，變成 unstage 狀態 (add前狀態)  可不用寫 —mixed
+git reset --hard @~1 #回到前一個狀態 ，變成改節點狀態（檔案庫,git 索引,資料夾檔案復原）
+git diff[tool] poem.txt #索引跟資料夾檔案比較 或是 最後commit 跟資料夾檔案比較
+git diff[tool] @ poem.txt #最後commit與資料夾檔案比較
+git diff[tool] @ @^ poem.txt #檔案庫間檔案比較
+git diff[tool] --cached poem.txt #最後commit跟索引比較
+git diff[tool] —no—index poem.txt poem2.txt #兩個資料夾檔案比較
+git checkout @ poem.txt #取出最後commit檔案覆蓋資料夾檔案
+git checkout poem.txt #先找索引，沒有再找最後commit
+git checkout . #所有檔案找到最新版後更新到最新狀態
+git grep ‘要找的字串’ ＠ #找最後commit裡面有沒有關鍵字，如過沒有＠搜尋所有檔案庫內容
+git grep -i ‘xxxx’ #不分大小寫
+git grep -e ‘xxxx1’ -e ‘xxxx2’ @ #找兩個以上關鍵字
+git blame poem.txt #找出最後修改人 #cfa7b1e3 (edwin 2016-10-21 05:34:30 +0800 1) wwww
+git mv poem.txt poemX.txt #改檔名同時更新索引，最後記得commit
+git stash save / git stash list / git stash [pop | apply] #暫存與回復暫存
+git gc #清理git檔案庫
+＠git add -A . #若有刪除檔案時進行此操作，會檢查是否有刪除的檔案並記錄索引，會在新的commit 移除檔案
+git log —author=‘edwin’ #只顯示edwin的commit
+git shortly #顯示不同開發者 commit 狀態
+#############[分支]#############
+git branch #列出所有分支
+git branch develop #最新commit長出分支develop
+git branch develop @^ #前一個commit長出分支
+git checkout develop #切換至develop分支
+git branch develop2 develop #develop上建立develop2分支
+#develop 命名可以用 bug/001/should-add-button 取名表示除臭蟲
+#develop 命名可以用 feat/multi-selection 取名表示新功能
+git branch --list bug/* #顯示 bug 開頭分支
+git checkout -f 分支名 #強制切換分支，如果檔案有更動狀況還是想切換
+gitk —all #顯示所有分支
+git log --graph --all --oneline --decorate #顯示所有分支
+git branch -d 分支名 #刪除分支(不能在該分支下)，一般來講要先合併再刪除，如果強制用-D
+git branch -m 新分支名 #修改分支名，記得先切換到該分支
+#git branch @^ 回到上一個節點, 建檔git add; git commit 會出現無名分支, git branch xxx 先命名, git checkout master, git branch -D xxx 刪除 xxx 分支（此為Detach HEAD測試）
+#############[合併]#############
+git checkout master; git merge develop; 將develop 合併到master上，fast-forward-merge
+#反悔可以用 git reset —hard @^
+#合併後可以把develop刪除，git branch -d develop
+git checkout master; git merge —no-ff develop; 將develop 合併到master上，3-way-merge
+#合併過程發生衝突可以用git merge —abort回復前狀態
+#合併衝突解決後 git add .; git commit -m ‘合併完成’; git branch -d 分支名
+git cherry-pick @^ #將commit合併到資料夾檔案 
+git cherry-pick —abort #放棄
+# git checkout bug; git rebase master 將master合併到bug路線，讓結構圖看起來更簡單，記得git add ., git rebase —continue 不適用遠端伺服器，應用merge
+git reflog 可以看到 ———
+02786fe HEAD@{0}: rebase finished: returning to refs/heads/bug
+02786fe HEAD@{1}: rebase: haha-bug
+008ea32 HEAD@{2}: rebase: checkout master
+f49596c HEAD@{3}: rebase: updating HEAD
+f49596c HEAD@{4}: rebase: aborting
+008ea32 HEAD@{5}: rebase: checkout master
+f49596c HEAD@{6}: commit: haha-bug
+8ff49a1 HEAD@{7}: checkout: moving from master to bug
+008ea32 HEAD@{8}: commit: haha-master
+8ff49a1 HEAD@{9}: commit (initial): add haha.txt
+#可以用 git reset —hard HEAD@{6} 回到rebase前狀態
+————
+#############[遠端git檔案庫]#############
+git init --bare shareRepo.git #製作遠端庫
+git clone shareRepo.git/ #產生本地庫
+git push [-u] origin master #將本地推到遠端，-u會記錄本地與遠端對應關係
+git branch -a ———————
+* master
+  remotes/origin/master
+———————
+git push —all 本地所有分支都會傳到遠端
+git pull [—all]取得目前所在分支最新資料，—all 取多所有分支最新資料。解決衝突再push回去
+git pull —rebase / git pull -r 有rebase 效果

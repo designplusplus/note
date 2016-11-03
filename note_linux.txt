@@ -1,0 +1,317 @@
+Linux
+#############[第一章]#############
+3.3.2 主機服務規劃
+Ctrl+Alt+Delete 快速登出
+FN+Ctrl+Alt+F1~F6/F7 Command Line Tool
+exit 登出 = ctrl+d
+ls -al 列出檔案列表
+echo $LANG 輸出語系
+date 秀出日期
+cal 秀出日曆
+tab 命令補齊 檔案補全 (ls -a ~/bash [tab],[tab])
+ctrl + c 可停止 find /
+man date > 頁面下搜尋關鍵字可用/date搜尋date, n/N 向下上搜尋
+info info 字典
+nano text.txt 文字編輯器
+who 查詢誰再用linux
+netstat -a | less 看網路狀態(加上less 可以上下移動看全文,或用more)
+ps -aux 看背景程序
+sync 關機前確保記憶體資料寫入硬碟
+shutdown -h 0(或now) 服務關閉後關機
+
+#############[第二章]#############
+chgrp
+chown 
+chmod 777 filename, r:4 w:2 x:1
+chmod u=rwx,go=rx filename
+chmod a+w filename 所有權限加上可寫
+cp fileA fileB 複製 fileA
+cat file.txt 顯示內容
+cd ~
+pwd 當前目錄位址
+mkdir -P遞迴新增目錄
+mkdir -m 777 test2
+rmdir -P遞迴刪除目錄
+mv file folder 移動, mv folder1 folder2 改名成folder2
+cp -ai 完全複製若有相同檔詢問一遍
+\rm -r etc 刪掉etc資料夾不詢問（\會不詢問）
+touch ./-aaa- 建立空檔
+basename /etc/sysconfig/network >> network
+dirname /etc/sysconfig/network >>/etc/sysconfig/
+ls -al | nl | less 加上行號與頁面可上下移動
+ls -al | nl | head 顯示前10行內容 , cat
+ls -al | nl | tail 顯示後10行內容 , tac
+ls -al | od 二進位顯示
+7.3.5 mtime, ctime, atime  檔案時間屬性
+chattr -ia i表示不能新增刪除修改，a表示只能增加資料（root下才能用i跟a）
+7.4.3 SUID, SGID, SBIT 特殊權限
+file xxx 觀察檔案類型
+which, type, whereis, locate(若有新檔案可以updatedb), 
+find / -size +1G
+find /etc -name ‘*httpd*’
+——————
+df 顯示個磁碟空間, df -h, df -aT, df 目錄（找出目錄所在磁碟）
+dumpe2fs /dev/sda2 查看檔案系統詳細資訊
+ls -li 開頭顯示indole編號
+ls -l /lib/modules/$(name -r)/kernel/fs linux支援的檔案系統列表
+cat /proc/filesystems 目前仔入記憶體支援的檔案系統
+du, du -a, du -sm /* 檢查跟目錄底下每個目錄所佔容量
+ln 建立實體連結 hard link
+ln -s 建立符號連結 symbolic link 捷徑檔
+fdisk /dev/sda 磁碟分割工具, fdisk -l 列出分割列表
+mkfs -t ext3 /dev/sda6 格式化
+fsck -Cf /dev/sda6 檢查磁軌有無問題
+badblocks -sv /dev/sda6 檢查有無壞軌
+mkdir /mnt/sda6; mount /dev/sda6 /mnt/sda6; df; 掛載 
+umount /dev/sda6 卸載
+8.4開機掛載
+——————
+gzip -v test.txt
+zcat test.txt.gz 
+gzip -d test.txt.gz
+bzip2 -v test.txt
+bzcat test.txt.bz2
+bzip2 -d test.txt.bz2
+bzip2 -c test.txt > test.txt.bz2 保留原檔
+壓縮 tar -jcv filename.tar.bz2 要被壓縮的檔案或目錄
+查詢 tar -jtv filename.tar.bz2
+解壓縮 tar -jxv filename.tar.bz2 -C 與解壓縮之目錄
+解開單一檔案 tar -ztv -f etc.tar.gz | grep ’shadow’; tar -zxv -f etc.tar.gz etc/shadow
+9.4 dump & restore, 9.5 建立映像檔與光碟燒錄, 9.6 備份工具
+
+#############[第三章]#############
+vi指令
+0 移到該行第一字元
+$ 移到該行最後字元
+G 移到檔案最後一行
+gg 移動到檔案第一行
+nG跳到指定行數
+/word 字串搜尋 配合 nN
+xX刪除字元
+dd刪除整列
+yy複製整列
+p,P 貼上
+u復原
+Ctrl+r 重做
+.重複前一個動作
+Ctrl+v 區塊選擇, y複製, d刪除
+:wq!強制寫入離開, ZZ儲存離開
+:w filename 另存新檔
+:set nu , :set nonu 顯示行號
+vim afile baile 開兩個檔案
+:files 觀察開啟檔案
+:n, :N 切換檔案
+:sp /path/to/file 開多視窗 Ctrl+w+up / Ctrl+w+down 上下切換視窗
+10.4.3 iconv
+—————————[BASH]—————————
+echo $MAIL
+echo $PATH
+echo $LANG
+var=“lang is $LANG”; echo $var;
+version=$(name -r); echo $version; #$(指令)
+version=`name -r`; #亦可, ex: ll `locate crontab`
+export version #讓變數可以應用在其他子程序
+unset var;
+unset version;
+env | less 列出環境變數
+set | nl | less 列出所有變數（環境變數與自定義變數）
+read user_var; echo $user_var
+declare -i sum=100+300+50; echo $sum
+declare -x e_var 宣告環境變數同等export
+declare -a var 
+———11.2.8
+path=$PATH
+path=$path:/home/edwin/bin 新增
+${path#/edwin/bin} 刪除
+————
+alias
+alias xx=‘ls -a’
+unalias xx
+cat > catfile [enter]
+test string !! [Ctrl+d 離開]
+cat catfile #test string !!
+cat > catfile < ~/.bashrc 複製檔案
+cat > catfile  << “eof” [enter]
+>This is a test 
+>eof [enter 自動離開]
+cmd1; cmd2
+cmd1 && cmd2
+cmd1 || cmd2
+echo $PATH | cut -d ‘:’ -f 2 取第二段變數
+last | grep ‘reboot’ 有reboot的資料列出來
+cat /etc/passwd | sort -t ‘:’ -k 3 -n 第三個元素以數字排列
+last | cut -d ‘ ‘ -f 1 | sort | uniq -c(顯示重複次數)
+last | cut -d ‘ ‘ -f 1 | sort | uniq -c | wc 顯示行數 字數 字元數
+ll | tee text.txt | less 建檔並顯示
+echo $PATH | tr -d ‘:’ 刪除冒號
+echo $PATH | tr ‘[a-z]’ ‘[A-Z]’ 轉大寫
+dmesg | grep -n —color=auto ‘Bluetooth’ 顯示  Bluetooth 相關裝置
+wget http://xxxxxx.txt 下載到當前目錄
+sed ‘2a’ 新增
+sed ‘2,5d’ 刪除
+sed ’2,5c test’ 取代
+sed ’s/old/new/g’ 正規取代
+last -n 5 | awk ‘{print $1 “\t” $3}’ 格式化輸出
+12.4.3 檔案比對工具 diff, cmp, patch 
+
+#############[第四章]#############
+useradd test_acc
+passwd test_acc
+userdel test_acc
+rm -rf /home/test_acc  
+rm -rf /var/spool/mail/test_acc
+passwd -S test_acc 查看密碼相關設定
+passwd -l test_acc 不讓登入
+passwd -u test_acc 給予登入
+chage -l test_acc  查看密碼相關設定 詳細說明
+usermod -xxx test_acc 修改帳號相關資訊
+groupadd / groupmod / groupdel
+-ACL, access control list
+setfacl -m u:edwin:rwx sh01.sh 額外加權限給user
+setfacl -m g:edwin:rwx sh01.sh 額外加權限給group 
+setfacl -m m:rwx sh01.sh 修改mask，宇集才有作用
+getfacl sh01.sh
+setfacl -m d:u:edwin:rx /tmp tmp資料夾下新建檔案繼承特性
+setfacl -b sh01.sh 刪除ACL特性
+su - 轉換 root
+su - edwin 轉換 edwin
+su - -c “指令” 以root身份執行指令後轉回身份
+sudo -u edwin sh -c “指令” 以edwin身份執行指令後轉回身份
+sudo -u edwin touch /tmp/aaa 切換使用者建立檔案
+visudo 設定 sudo 權限給指定帳號
+id, finger, last 查詢帳戶狀態
+w,who, lastlog 查詢目前使用作業系統的人
+who; write edwin pts/1[enter]hello[Ctrl+d] 傳訊息給其他人
+mesg n 不接受訊息 ; mesg y 接受訊息
+wall “fuck” 廣播
+mail edwin -s “你好” 寄信
+mail[enter] ? 看信箱功能
+————quota, RAID, LVM (quota 可以限制多帳號使用容量)
+mount -o remount,usrquota,grpguota /home只想這次開機實驗quota
+quota check -avug 建立quota紀錄在檔案系統頂層 aquota.group / aquota.user
+quotaon -avug 啟動quota服務
+quotaoff -a 關閉所有quota服務
+————crontab
+at像是js的setTimeout, 使用at前
+/etc/init.d/atd restart; chkconfig atd on 永久啟動
+可觀察黑白名單 /etc/at.allow 與 /etc/at.deny
+at now + 1 minutes[enter]
+at> reboot 
+at now + 1 minutes[enter]
+at> echo “test” > /dev/tty1
+at now + 1 minutes[enter]
+at> echo $PATH[ctrl+d] #1分鐘後寄信到mail 
+at -l 顯示目前排成有哪些 = atq
+at -d 刪除排程 = atrm
+crontab像是js的setInterval
+可觀察黑白名單 /etc/cron.allow 與 /etc/cron.deny
+crontab -e 編輯排程
+*/5 * * * * echo “test” > /dev/tty1 每5分鐘執行一次
+0 3,6 * * * echo “test” > /dev/tty1 3點6點各執行一次
+20 8-12 * * * echo “test” > /dev/tty1 8點到12點的20分都執行一次
+————程序管理（像windows工作管理員）
+echo “test” & #&符號就是丟到背景處理
+vi ~/.bashrc [Ctrl+z] 背景中暫停
+find / -print [Ctrl+z] 背景中暫停
+job -l 會看到兩個暫停的工作
+fg %1#背景工作編號
+jobs; bg %1#背景工作編號; jobs
+kill -9 %1; jobs; #-9為強制刪除工作，或用-15正常結束工作
+killall -9 httpd 以名稱刪除
+nohup xxx.sh &; exit; 登出後仍然進行
+ps -l 查看程序process
+ps aux 查看系統所有程序process
+ps axjf 顯示程序樹
+pstree -Aup 顯示程序樹
+top -d 2 動態顯示程序，每兩秒更新一次程序
+其他系統檢視
+free 記憶體
+uname -a 系統核心資訊
+uptime 觀察系統啟動時間
+netstat -a 網路狀態
+dmesg 分析核心訊息
+vmstat 5 系統資源變化，每五秒更新 #Ctrl+c跳開
+17.4 ls特殊檔案程序
+17.5 SELinux
+————DAEMON (難)
+cat /etc/service | nl | less觀察服務與對應port
+cat /var/run 查服務程序PID
+cat /etc/init.d/* 啟動腳本
+cat /etc/sysconfig/* 各服務設定檔
+service crowd restart 服務重啟
+/etc/xinetd.d 目錄下檔案為 super daemon 相關設定 參考18-12
+/etc/hosts.allow, /etc/hosts.deny 防火牆設定
+————登入檔 (難)
+/var/log/* 下面查詢
+#############[第五章]#############
+20開機流程 grub
+21系統設定工具 印表機設定
+setup
+21-17 nmap 掃描主機阜口
+lspci 列出pic裝置
+lsusb 列出usb裝置
+iostat 列出CPU與周邊設備ＩＯ狀態  
+————原始碼與Tarball
+gcc hello.c; ll; 輸出 a.out 檔案
+./a.out #hello world
+gcc -c hello.c 輸出 hello.o 檔案
+gcc -o hello hello.o 輸出 hello binary 執行檔
+./hello #hello world
+ldd 檢查binary 相依函式庫
+md5sum file 指紋辨識
+sha1sum file 指紋辨識
+————RPM, SRPM, YUM
+rpm -ivh xxxx.rpm 安裝
+rpm -Fvh xxxx.rpm 升級更新
+rpm -qa 顯示所有安裝軟體
+rpm -q logrotate 查看是否有該軟體
+rpm -qi logrotate 查看 logratate 詳細資料
+rpm -qc logrotate 查看設定檔
+rpm -qd logrotate 查看說明檔
+rpm -ql logrotate 查看軟體相關檔案與目錄
+rpm -V logrotate 查看是否檔案被更動過如誤刪
+rpm -Vf logrotate  查看被更動過的檔案
+rpm -e 軟體 反安裝軟體
+yum search 關鍵字
+yum list 列出軟體
+yum info 軟體資訊
+yum list updates 檢查可更新軟體
+yum install xxx 安裝
+yum update xxx 更新
+yum remove xxx 移除
+yum grouplist 列出套件群組
+yum groupinfo xxx
+yum groupinstall xxx
+yum groupremove xxx
+yum -y update 更新軟體 -y表示自動回yes
+
+
+
+
+
+
+
+Linux 伺服器架設
+#############[第一篇]#############
+route -n 查route
+ifconfig eth0 取得本機卡號
+arp -n 觀察arp表
+ping 查看ICMP 網路連線狀態
+traceroute 查看ICMP 網路連線狀態
+dmesg | grep -in eth 檢視網路卡
+lspci | grep -i ethernet 檢視網路卡
+lsmod | grep 1000 檢查是否仔入模組 
+modinfo e1000 模組詳細資料
+ifconfig eth0 192.168.1.100 設定IP
+Linux 網路相關設定 ——————
+1.IP Netmask DHCP Gateway : /etc/sysconfig/network-scripts/ifcfg-eth0
+2.主機名 : /etc/sysconfig/network
+3.DNS IP : /etc/resolv.conf
+4.私有ip對應的主機名 : /etc/hosts 
+/etc/services 觀察協定
+/etc/protocols ip封包協定
+/etc/init.d/network restart 重啟網路
+ifup eth0 ( ifdown eth0 ) 打開關閉網路卡
+———————————————
+host www.google.com.tw 獲取ip
+tcpdump 封包分析
