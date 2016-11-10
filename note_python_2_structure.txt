@@ -1,0 +1,66 @@
+############################[程式結構]############################
+>>> connect = 'a'+\
+... 'b'+\
+... 'c'
+>>> connect
+'abc'
+============================
+>>> b = True
+>>> if b:
+...     print('good')
+... else:
+...     print('bad')
+... 
+good
+>>> a = True
+>>> b = True
+>>> if a:
+...     if b:
+...     	print('1')
+...     else:
+...             print('2')
+... else:
+...     if b:
+...             print('3')
+...     else:
+...             print('4')
+... 
+1
+>>> if num == 1:
+...     print('1')
+... elif num == 2:
+...     print('2')
+... else:
+...     print('3')
+... 
+1
+>>> x = 8
+>>> 5 < x
+True
+>>> x < 10
+True
+>>> 5 < x < 10
+True
+============================以下被視為False
+False
+None
+0
+0.0
+‘’
+[]
+()
+{}
+set()
+>>> bool(None)
+False
+============================
+>>> count = 1
+>>> while count <= 5:
+...     print(count)
+...     count += 1
+... 
+1
+2
+3
+4
+5
