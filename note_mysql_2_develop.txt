@@ -3,3 +3,109 @@
 show engines \G;
 alter table t engine=innodb; 更改類型
 show create table t \G;
+
+create table myisam_char (name char(10)) engine=myisam;
+insert into myisam_char values('abcde'),('abcde   '),('   abcde'); myisam後面空白會自動去掉
+select name, length(name) from myisam_char;
++----------+--------------+
+| name     | length(name) |
++----------+--------------+
+| abcde    |            5 |
+| abcde    |            5 |
+|    abcde |            8 |
++----------+--------------+
+
+create table my_innodb
+    -> (i smallint not null auto_increment, name varchar(10), primary key(i))
+    -> engine=innodb;
+insert into my_innodb values(1,'1'),(2,'2'),(null,'3'); null自動編號
+select * from my_innodb;
++---+------+
+| i | name |
++---+------+
+| 1 | 1    |
+| 2 | 2    |
+| 3 | 3    |
++---+------+
+
+show table status like 'my_innodb' \G;
+*************************** 1. row ***************************
+           Name: my_innodb
+         Engine: InnoDB
+        Version: 10
+     Row_format: Compact
+           Rows: 7
+ Avg_row_length: 2340
+    Data_length: 16384
+Max_data_length: 0
+   Index_length: 0
+      Data_free: 0
+ Auto_increment: 9
+    Create_time: 2016-11-05 14:06:21
+    Update_time: NULL
+     Check_time: NULL
+      Collation: utf8_general_ci
+       Checksum: NULL
+ Create_options: 
+        Comment: 
+
+＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃
+[SQL合適的資料類型]
+MyISAM適用char
+InnoDB適用varchar
+使用text, blob資料型態加入資料，delete刪除後記得定時下指令optimize table mytable;釋放空間
+針對text, blob資料可以建立散列值欄位當搜尋索引(md5,sha1,crc32)，減少硬碟IO
+硬幣單位請用decimal不要用浮點數，decimal會以字串儲存小數
+日期建議用datetime不要用timestamp, 因為儲存年份timestamp只能存到2038年
+
+＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃
+[SQL字元集]
+utf8_general_ci 一般較常使用校對規則
+＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃
+[SQL索引]
+create index cityname on city (city(10))
+explain select * from city where city=‘Fuzhou’ \G
+drop index cityname on city
+https://segmentfault.com/a/1190000000473085 
+
+＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃
+[SQL檢視表]
+create or replace view staff_list_view as 
+> select s.staff_id, s.first_name, s.last_name, a.address
+> from staff as s, address as a
+> where s.address_id = a.address_id;
+
+from 後面不能子查詢，可以先對子查詢做view表再利用
+以下類型的檢視表是不可更新的：有sum, min, max, count, distinct, group by, having, union, union all, 常數檢視表, select中包含子查詢, join, from 一個不能更新的檢視表, where 子句的子查詢引用了 from 字句中的表
+
+drop view staff_list_view;
+
+show tables 含 view
+show views 僅 view
+show table status like ’staff_list_view’ \G; 
+show create view staff_list_view; 查定義
+
+＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃＃
+[SQL儲存程序與函數]
+delimiter $$
+create procedure pro_t()
+    -> begin
+    -> select * from t1;
+    -> end $$
+delimiter ;
+call pro_t();
+
+SHOW PROCEDURE STATUS \G;
+SHOW FUNCTION STATUS \G;
+show create procedure pro_t \G;
+show create function pro_t \G;
+drop procedure pro_t;
+
+set @x = 1;
+select @x;
++------+
+| @x   |
++------+
+|    1 |
++------+
+
