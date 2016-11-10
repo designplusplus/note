@@ -1,0 +1,303 @@
+############################[數字,字串與變數]############################
+>>> a = 7
+>>> print(a)
+7
+>>> type(123)
+<class 'int'>
+>>> type(123.123)
+<class 'float'>
+>>> type('123')
+<class 'str'>
+============================
+>>> 9/5
+1.8
+>>> 9//5
+1
+>>> 9%5
+4
+============================
+>>> int(True)
+1
+>>> int(False)
+0
+>>> int(98.6)
+98
+>>> int(1.0e4)
+10000
+============================
+>>> """111111
+... 22222
+... 33333
+... 44444"""
+'111111\n22222\n33333\n44444'
+============================
+>>> long = """111
+... 222
+... 333
+... 444"""
+>>> print(long)
+111
+222
+333
+444
+============================
+>>> str(True)
+'True'
+>>> str(98.6)
+'98.6'
+============================
+>>> a = "hello"
+>>> b = " world"
+>>> a+b
+'hello world'
+>>> a+b*2
+'hello world world'
+============================
+>>> letters = '123456abcde'
+>>> letters[0]
+'1'
+>>> letters[:]
+'123456abcde'
+>>> letters[3:]
+'456abcde'
+>>> letters[:3]
+'123'
+>>> letters[3:5]
+'45'
+>>> letters[0:10:2]
+'135ac'
+>>> len(letters)
+11
+============================
+>>> str = "awerg,awr,serb,sdc"
+>>> str.split()
+['awerg,awr,serb,sdc']
+============================
+>>> arr=['111','2222','333']
+>>> ", ".join(arr)
+'111, 2222, 333'
+============================
+>>> letters = "I am a good student"
+>>> letters.startswith("I")
+True
+>>> letters.endswith("dent")
+True
+>>> letters.find('a')
+2
+>>> letters.rfind('a')
+5
+>>> letters.count('good')
+1
+>>> letters.isalnum()
+False
+>>> 'a'.isalnum()
+True
+>>> '1'.isalnum()
+True
+============================
+>>> letters = 'gogo Go Super man...'
+>>> letters.strip('.')
+'gogo Go Super man'
+>>> letters.strip('go')
+' Go Super man...'
+>>> letters.capitalize()
+'Gogo go super man...'
+>>> letters.title()
+'Gogo Go Super Man...'
+>>> letters.upper()
+'GOGO GO SUPER MAN...'
+>>> letters.lower()
+'gogo go super man...'
+>>> letters.swapcase()
+'GOGO gO sUPER MAN...'
+>>> letters.center(30)
+'     gogo Go Super man...     '
+>>> letters.ljust(30)
+'gogo Go Super man...          '
+>>> letters.rjust(30)
+'          gogo Go Super man...'
+>>> letters.replace("Super","Power")
+'gogo Go Power man...'
+
+############################[串列, Tuple, 字典與集合]############################
+>>> empty = []
+>>> empty
+[]
+>>> empty = list()
+>>> empty
+[]
+>>> list('cat')
+['c', 'a', 't']
+>>> a_tuple = ('a','b','c')
+>>> list(a_tuple)
+['a', 'b', 'c']
+>>> a_list=['a','b','c']
+>>> a_list[0]
+'a'
+>>> a_list[-1]
+'c'
+>>> a_list[0:2]
+['a', 'b']
+>>> a_list[::2]
+['a', 'c']
+>>> a_list[::-1]
+['c', 'b', 'a']
+>>> a_list.append('d')
+>>> a_list
+['a', 'b', 'c', 'd']
+>>> a_list.insert(3,'x')
+>>> a_list
+['a', 'b', 'c', 'x', 'd']
+>>> del a_list[-1]
+>>> a_list
+['a', 'b', 'c', 'x']
+>>> a_list.remove('x')
+>>> a_list
+['a', 'b', 'c']
+>>> a_list.pop()
+'c'
+>>> a_list
+['a', 'b']
+============================
+>>> a_list=['a','b','c','d','e']
+>>> a_list.index('c')
+2
+>>> 'b' in a_list
+True
+>>> a_list.count('a')
+1
+============================
+>>> a_list=['a','b','d','c','e']
+>>> b_list=sorted(a_list)
+>>> b_list
+['a', 'b', 'c', 'd', 'e']
+>>> a_list
+['a', 'b', 'd', 'c', 'e']
+>>> a_list.sort()
+>>> a_list
+['a', 'b', 'c', 'd', 'e']
+>>> len(a_list)
+5
+============================串列
+>>> a = [1,2,3]
+>>> b = a
+>>> b[0] = 999
+>>> b
+[999, 2, 3]
+>>> a
+[999, 2, 3]
+>>> a = [1,2,3]
+>>> b = a.copy()
+>>> b[0]=999
+>>> b
+[999, 2, 3]
+>>> a
+[1, 2, 3]
+============================Tuple
+>>> empty_tuple = ()
+>>> empty_tuple 
+()
+>>> one = 'ggg',
+>>> one
+('ggg',)
+>>> two = 'xxx','yyy','zzz'
+>>> two
+('xxx', 'yyy', 'zzz')
+>>> three = (1,2,3)
+>>> three
+(1, 2, 3)
+>>> a, b, c = three
+>>> a
+1
+>>> b
+2
+>>> c
+3
+>>> a = 'a'
+>>> b = 'b'
+>>> a, b = b, a
+>>> a
+'b'
+>>> b
+'a'
+============================字典
+>>> empty_dict={}
+>>> empty_dict
+{}
+>>> my_dict={
+... a:'aaaa',
+... b:'bbbb',
+... c:'cccc'
+... }
+>>> my_dict
+{3: 'cccc', 'a': 'bbbb', 'b': 'aaaa'}
+>>> my_dict={
+... 'a':'aaaa',
+... 'b':'bbbb',
+... 'c':'cccc'
+... }
+>>> my_dict
+{'c': 'cccc', 'a': 'aaaa', 'b': 'bbbb'}
+>>> lol = [['a','b'],['c','d'],['e','f']]
+>>> dict(lol)
+{'e': 'f', 'c': 'd', 'a': 'b'}
+>>> lot = [('a','b'),('c','d'),('e','f')]
+>>> dict(lot)
+{'e': 'f', 'c': 'd', 'a': 'b'}
+>>> tol = (['a','b'],['c','d'],['e','f'])
+>>> dict(tol)
+{'e': 'f', 'c': 'd', 'a': 'b'}
+>>> los=['ab','cd','ef']
+>>> dict(los)
+{'e': 'f', 'c': 'd', 'a': 'b'}
+>>> tos=('ab','cd','ef')
+>>> dict(tos)
+{'e': 'f', 'c': 'd', 'a': 'b'}
+============================
+>>> member={'a':'a','b':'b','c':'c'}
+>>> other={'d':'d','e':'e'}
+>>> member.update(other)
+>>> member
+{'e': 'e', 'b': 'b', 'd': 'd', 'c': 'c', 'a': 'a'}
+>>> del member['a']
+>>> member
+{'e': 'e', 'b': 'b', 'd': 'd', 'c': 'c'}
+>>> 'a' in member
+False
+>>> 'b' in member
+True
+>>> member.clear()
+>>> member
+{}
+>>> member={'a':'1','b':'2','c':'3'}
+>>> member.get('a')
+'1'
+>>> member.keys()
+dict_keys(['b', 'c', 'a'])
+>>> member.values()
+dict_values(['2', '3', '1'])
+>>> list(member.values())
+['2', '3', '1']
+>>> list(member.items())
+[('b', '2'), ('c', '3'), ('a', '1')]
+>>> mem2 = member.copy()
+>>> mem2['a']='x'
+>>> mem2
+{'a': 'x', 'c': '3', 'b': '2'}
+>>> member
+{'b': '2', 'c': '3', 'a': '1'}
+============================集合
+>>> empty_set = set()
+>>> empty_set
+set()
+>>> set_sample={0,2,4,6,8}
+>>> set_sample
+{8, 0, 2, 4, 6}
+>>> set('letters')
+{'e', 'r', 't', 'l', 's'}
+>>> set(['a','b','c','d'])
+{'b', 'd', 'c', 'a'}
+>>> set(('a','b','c','d'))
+{'b', 'd', 'c', 'a'}
+>>> set({'a':'1','b':'2','c':'3'})
+{'a', 'c', 'b'}
