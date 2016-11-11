@@ -64,3 +64,305 @@ False
 3
 4
 5
+============================
+>>> while True:
+...     stuff=input("String to capitalize [type q to quit]: ")
+...     if stuff == "q":
+...             break
+...     print(stuff.capitalize())
+... 
+String to capitalize [type q to quit]: test
+Test
+String to capitalize [type q to quit]: hey, it works
+Hey, it works
+String to capitalize [type q to quit]: q
+>>>
+============================
+>>> while True:
+...     value=input("Interger, please [q to quit]: ")
+...     if value == 'q':  #quit
+...             break
+...     number = int(value)
+...     if number % 2 == 0:  #an even number
+...             continue
+...     print(number, "squared is", number*number)
+... 
+Interger, please [q to quit]: 1
+1 squared is 1
+Interger, please [q to quit]: 2
+Interger, please [q to quit]: 3
+3 squared is 9
+Interger, please [q to quit]: 4
+Interger, please [q to quit]: 5
+5 squared is 25
+Interger, please [q to quit]: q
+>>> 
+============================
+>>> numbers = [1, 3, 5]
+>>> position = 0
+>>> while position < len(numbers):
+...     number = numbers[position]
+...     if number % 2 == 0:
+...             print('Found even number', number)
+...             break
+...     position += 1
+... else:
+...     print('No even number found')
+... 
+No even number found
+>>> 
+============================
+>>> arr = ['a', 'b', 'c', 'd']
+>>> current = 0
+>>> while current < len(arr):
+...     print(arr[current])
+...     current += 1
+... 
+a
+b
+c
+d
+
+>>> for current in arr:
+...     print(current)
+... 
+a
+b
+c
+d
+============================
+>>> word = 'cat'
+>>> for letter in word:
+...     print(letter)
+... 
+c
+a
+t
+============================
+>>> dict_obj = {'a':1, 'b':2, 'c':3}
+>>> for element in dict_obj: #for element in dict_obj.keys()
+...     print(element)
+... 
+c
+a
+b
+
+>>> for element in dict_obj.values():
+...     print(element)
+... 
+3
+1
+2
+
+>>> for item in dict_obj.items():
+...     print(item)
+... 
+('c', 3)
+('a', 1)
+('b', 2)
+
+>>> for key, value in dict_obj.items():
+...     print(key, ':', value)
+... 
+c : 3
+a : 1
+b : 2
+============================
+>>> arr = []
+>>> for i in arr:
+...     print(1)
+... else:
+...     print(2)
+... 
+2
+============================
+>>> a_grp = [1,2,3]
+>>> b_grp = [4,5,6]
+>>> c_grp = [7,8,9]
+>>> d_grp = [10,11,12]
+>>> for a,b,c,d in zip(a_grp, b_grp, c_grp, d_grp):
+...     print(a,b,c,d)
+... 
+1 4 7 10
+2 5 8 11
+3 6 9 12
+===========================
+>>> a_grp = 1,2,3
+>>> b_grp = 4,5,6
+>>> list(zip(a_grp, b_grp))
+[(1, 4), (2, 5), (3, 6)]
+>>> dict(zip(a_grp, b_grp))
+{1: 4, 2: 5, 3: 6}
+===========================
+>>> for x in range(0,3):
+...     print(x)
+... 
+0
+1
+2
+>>> list(range(0,3))
+[0, 1, 2]
+>>> for x in range(2, -1, -1): #start, stop, step
+...     print(x)
+... 
+2
+1
+0
+>>> list(range(0,11,2))
+[0, 2, 4, 6, 8, 10]
+===========================
+>>> l = []
+>>> l.append(1)
+>>> l.append(2)
+>>> l.append(3)
+>>> l.append(4)
+>>> l.append(5)
+>>> l
+[1, 2, 3, 4, 5]
+>>> l = []
+>>> for i in range(0,6):
+...     l.append(i)
+... 
+>>> l
+[0, 1, 2, 3, 4, 5]
+>>> l = list(range(0,6))
+>>> l
+[0, 1, 2, 3, 4, 5]
+===========================串列生成式
+>>> l = [number for number in range(0,6)]
+>>> l
+[0, 1, 2, 3, 4, 5]
+>>> l = [number-1 for number in range(1,6)]
+>>> l
+[0, 1, 2, 3, 4]
+>>> l = [number for number in range(1,6) if number % 2 == 1]
+>>> l
+[1, 3, 5]
+>>> l = []
+>>> for number in range(1,6):
+...     if(number % 2 == 1):
+...     	l.append(number)
+... 
+>>> l
+[1, 3, 5]
+>>> rows = range(1,4)
+>>> cols = range(1,3)
+>>> for row in rows:
+...     for col in cols:
+...         print(row, col)
+... 
+1 1
+1 2
+2 1
+2 2
+3 1
+3 2
+>>> rows = range(1,4)
+>>> cols = range(1,3)
+>>> cells = [(row, col) for row in rows for col in cols]
+>>> for cell in cells:
+...     print(cell)
+... 
+(1, 1)
+(1, 2)
+(2, 1)
+(2, 2)
+(3, 1)
+(3, 2)
+>>> for row, col in cells:
+...     print(row, col)
+... 
+1 1
+1 2
+2 1
+2 2
+3 1
+3 2
+===========================字典生成式
+>>> word = "letters"
+>>> letter_counts = {letter:word.count(letter) for letter in word}
+>>> letter_counts
+{'r': 1, 's': 1, 'e': 2, 't': 2, 'l': 1}
+>>> letter_counts = {letter:word.count(letter) for letter in set(word)}
+>>> letter_counts
+{'r': 1, 's': 1, 'e': 2, 't': 2, 'l': 1}
+===========================集合生成式
+>>> a_set = {number for number in range(1,6) if number % 3 == 1}
+>>> a_set
+{1, 4}
+===========================產生器生成式, 不是Tuple
+>>> gen = (number for number in range(1,6))
+>>> type(gen)
+<class 'generator'>
+>>> for num in gen:
+...     print(num)
+... 
+1
+2
+3
+4
+5
+>>> gen = (number for number in range(1,6))
+>>> num_list = list(gen)
+>>> num_list
+[1, 2, 3, 4, 5]
+>>> num_list = list(gen) #第二次使用不會產生
+>>> num_list
+[]
+===========================函式
+>>> def fun():
+...     pass
+... 
+>>> fun()
+>>> 
+>>> def fun():
+...     print("hello")
+... 
+>>> fun()
+hello
+>>> def echo(p):
+...     return p+' '+p
+... 
+>>> echo("good")
+'good good'
+===========================None
+>>> thing = None
+>>> if(thing):
+...     print('y')
+... else:
+...     print('n')
+... 
+n
+===========================參數
+>>> def menu(a,b,c):
+...     return a,b,c
+... 
+>>> menu(1,2,3)
+(1, 2, 3)
+>>> menu(a=1,b=2,c=3)
+(1, 2, 3)
+>>> def menu(a,b,c=1):
+...     return a,b,c
+... 
+>>> menu('x','y')
+('x', 'y', 1)
+===========================
+>>> def buggy(arg, result=[]):
+...     result.append(arg)
+...     print(result)
+... 
+>>> buggy('a')
+['a']
+>>> buggy('b')
+['a', 'b']
+
+>>> def buggy(arg):
+...     result=[]
+...     result.append(arg)
+...     print(result)
+... 
+>>> buggy('a')
+['a']
+>>> buggy('b')
+['b']
+
