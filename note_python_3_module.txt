@@ -158,3 +158,190 @@ b
  'txt': 'dcba'}
 >>> 
 ============================ 物件與類別
+# 建構式
+>>> class People:
+...     def __init__(self, name):
+...             self.name = name
+>>> people = People('Edwin')
+>>> people.name
+'Edwin'
+# 繼承
+>>> class Car:
+...     def do(self):
+...             print("I am a Car")
+... 
+>>> class Much(Car):
+...     pass
+... 
+>>> car = Car()
+>>> much = Much()
+>>> car.do()
+I am a Car
+>>> much.do()
+I am a Car
+# 覆寫, 任何方法都可覆寫包含__init__
+>>> class Car:
+...     def do(self):
+...             print("I am a Car")
+... 
+>>> class Much(Car):
+...     def do(self):
+...             print("I am a Much, Bu Bu!")
+... 
+>>> car = Car()
+>>> much = Much()
+>>> car.do()
+I am a Car
+>>> much.do()
+I am a Much, Bu Bu!
+# class 內用 super() 可以取到父物件
+# setter, getter 第一種方式 但是會多出 get_name, set_name 讓使用者存取
+>>> class Person:
+...     def __init__(self, name):
+...             self.h_name = name
+...     def get_name(self):
+...             return self.h_name
+...     def set_name(self, name):
+...             self.h_name = name
+...     name = property(get_name, set_name)
+... 
+>>> p = Person('Cool')
+>>> p.name
+'Cool'
+>>> p.name = 'Good'
+>>> p.name
+'Good'
+# setter, getter 第二種方式用裝飾器, 沒有@name.setter就是唯獨, h_name還是能被使用者存取
+>>> class Person:
+...     def __init__(self, name):
+...             self.h_name = name
+...     @property
+...     def name(self):
+...             return self.h_name
+...     @name.setter
+...     def name(self, name):
+...             self.h_name = name
+... 
+>>> p = Person('haha')
+>>> p.name
+'haha'
+>>> p.name = 'test'
+>>> p.name
+'test'
+# 私有成員用__雙底線來保護
+>>> class Person:
+...     def __init__(self, name):
+...             self.__name = name
+...     @property
+...     def name(self):
+...             return self.__name
+...     @name.setter
+...     def name(self, name):
+...             self.__name = name
+... 
+>>> p = Person('haha')
+>>> p.name
+'haha'
+>>> p.name = 'test'
+>>> p.name
+'test'
+# 類別方法, 使用 cls 變數代表 A
+>>> class A:
+...     count = 0 #類別屬性
+...     def __init__(self):
+...             A.count += 1
+...     @classmethod
+...     def A_method(cls):
+...             print("A has",cls.count,"objects")
+... 
+>>> A.A_method()
+A has 0 objects
+>>> A1 = A()
+>>> A2 = A()
+>>> A3 = A()
+>>> A.A_method()
+A has 3 objects
+# 類別方法第二種
+>>> class B:
+...     @staticmethod
+...     def do():
+...             print("static call")
+... 
+>>> B.do()
+static call
+# 多型，只要有定義一樣的方法，不同類別無繼承關係也可以使用
+>>> class A:
+...     def do():
+...             print("A call")
+...
+>>> class B(A):
+...     def do():
+...             print("B call")
+...
+>>> class C:
+...     def do():
+...             print("C call")
+...
+>>> def who_call(obj):
+...     obj.do()
+...
+>>> a = A()
+>>> b = B()
+>>> c = C()
+>>> who_call(a)
+A call
+>>> who_call(b)
+B call
+>>> who_call(c)
+C call
+============================ 魔術方法
+>>> class Word:
+...     def __init__(self,text):
+...             self.text = text
+...     def __eq__(self, other):
+...             return self.text.lower()==other.text.lower()
+... 
+>>> a = Word('ha')
+>>> b = Word('HA')
+>>> c = Word('eA')
+>>> a == b
+True
+>>> a == c
+False
+#其他參考 __lt__, __gt__, __add__, __mod__, __len__
+============================ 組合
+>>> class Bill:
+...     def __init__(self, description):
+...             self.description = description
+... 
+>>> class Tail:
+...     def __init__(self, length):
+...             self.length = length
+... 
+>>> class Duck:
+...     def __init__(self, bill, tail):
+...             self.bill = bill
+...             self.tail = tail
+...     def about(self):
+...             print("this duck has a",self.bill.description,'bill and a',self.tail.length,'tail')
+... 
+>>> tail=Tail("long")
+>>> bill=Bill('wide orange')
+>>> duck=Duck(bill, tail)
+>>> duck.about()
+this duck has a wide orange bill and a long tail
+============================ 具名Tuple
+>>> from collections import namedtuple
+>>> Duck = namedtuple('Duck','bill tail')
+>>> duck = Duck('wide orange','long')
+>>> duck
+Duck(bill='wide orange', tail='long')
+>>> duck.bill
+'wide orange'
+>>> duck.tail
+'long'
+>>> parts = {'bill':'wide orange', 'tail':'long'}
+>>> duck2 = Duck(**parts)
+>>> duck2
+Duck(bill='wide orange', tail='long')
+#可以當作字典用, 不能改變值, 節省空間與計算時間
