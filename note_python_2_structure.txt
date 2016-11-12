@@ -365,4 +365,229 @@ n
 ['a']
 >>> buggy('b')
 ['b']
+===========================引數
+>>> def multiparams(*args):
+...     print(args)
+... 
+>>> multiparams(1,2,3)
+(1, 2, 3) #tuple
+>>> def multiparams(**args):
+...     print(args)
+... 
+>>> multiparams(a=1,b=2,c=3)
+{'c': 3, 'b': 2, 'a': 1}
+============================文件說明
+>>> def printArticle(txt):
+...     'this is function document'
+...     return txt
+... 
+>>> help(printArticle)
+—
+Help on function printArticle in module __main__:
 
+printArticle(txt)
+    this is function document
+(END)
+—
+>>> print(printArticle.__doc__)
+this is function document
+
+—
+>>> def longArticle():
+...     '''
+...	line1
+...     line2
+...     line3
+...	'''
+... 
+>>> help(longArticle)
+Help on function longArticle in module __main__:
+
+longArticle()
+    line1
+    line2
+    line3
+(END)
+—
+============================函式參數
+>>> def answer():
+...     print(42)
+... 
+>>> def run_func(func):
+...     func()
+... 
+>>> run_func(answer)
+42
+>>> def sum_args(*args):
+...     print(sum(args))
+... 
+>>> sum_args(1,2,3,4)
+10
+============================內部函示
+>>> def outer(a, b):
+...     def inner(c, d):
+...             return c+d
+...     return inner(a, b)
+... 
+>>> outer(4,7)
+11
+============================閉包Closure(動態生成內部函示)
+>>> def show(txt):
+...     def closure():
+...             return 'show txt %s' % txt
+...     return closure
+... 
+>>> a = show("test1")
+>>> b = show("test2")
+>>> type(a)
+<class 'function'>
+>>> type(b)
+<class 'function'>
+>>> a
+<function show.<locals>.closure at 0x101ca1ea0>
+>>> b
+<function show.<locals>.closure at 0x101ca1f28>
+>>> a()
+'show txt test1'
+>>> b()
+'show txt test2'
+============================匿名函式 Lambda
+>>> def edit_story(words, func):
+...     for word in words:
+...             print(func(word))
+... 
+>>> stairs=['1','2','3','4']
+>>> def enliven(word):
+...     return word.capitalize()+'!'
+... 
+>>> edit_story(stairs,enliven)
+1!
+2!
+3!
+4!
+>>> edit_story(stairs, lambda word: word.capitalize()+'!')
+1!
+2!
+3!
+4!
+>>> 
+============================產生器（無法用生成式時）
+>>> def my_range(first=0,last=10,step=1):
+...     number = first
+...     while number < last:
+...             yield number
+...             number += step
+... 
+>>> my_range
+<function my_range at 0x101ca8158>
+>>> ranger = my_range
+>>> ranger = my_range(1,5)
+>>> ranger
+<generator object my_range at 0x101a21c50>
+>>> for x in ranger:
+...     print(x)
+... 
+1
+2
+3
+4
+>>>
+============================裝飾器
+>>> def document_it(func):
+...     def new_function(*args, **kwargs):
+...             print('Running function:', func.__name__)
+...             print('Positional arguments', args)
+...             print('Keywords arguments', kwargs)
+...             result = func(*args, **kwargs)
+...             print('Result:', result)
+...             return result
+...     return new_function
+... 
+>>>
+>>> def add_ints(a, b):
+...     return a+b
+... 
+>>> add_ints(3,5)
+8
+>>> cooler_add_ints = document_it(add_ints)
+>>> cooler_add_ints(3,5)
+Running function: add_ints
+Positional arguments (3, 5)
+Keywords arguments {}
+Result: 8
+8
+>>> 
+>>> @document_it
+... def add_ints(a, b):
+...     return a+b
+... 
+>>> add_ints(3,5)
+Running function: add_ints
+Positional arguments (3, 5)
+Keywords arguments {}
+Result: 8
+8
+>>> def square(func):
+...     def new_function(*args, **kwargs):
+...             result=func(*args,**kwargs)
+...             return result*result
+...     return new_function
+... 
+>>> 
+>>> @document_it
+... @square
+... def add_ints(a,b):
+...     return a+b
+... 
+>>> add_ints(3,5)
+Running function: new_function
+Positional arguments (3, 5)
+Keywords arguments {}
+Result: 64
+64
+>>> 
+>>> @square
+... @document_it
+... def add_ints(a,b):
+...     return a+b
+... 
+>>> add_ints(3,5)
+Running function: add_ints
+Positional arguments (3, 5)
+Keywords arguments {}
+Result: 8
+64
+============================命名空間與範圍
+#id(變數)可以取得獨一無二的值
+>>> g = 1
+>>> def change_g():
+...     global g #使用全域 g
+...     g = 2
+...     print('now global g =',g, id(g))
+... 
+>>> g
+1
+>>> change_g()
+now global g = 2 4297537984
+>>> g
+2
+>>> id(g)
+4297537984
+#locals()可以取函示內部變數字典
+#globals()可以取得全域變數字典
+============================try與except
+>>> l = [1,2,3]
+>>> pos = 5
+>>> try:
+...     l[pos]
+... except:
+...     print('out of index')
+... 
+out of index
+>>> 
+>>> try:
+...     l[pos]
+... except IndexError as err: #用內建 IndexError
+...     print('bad index:',pos,err)
+... 
+bad index: 5 list index out of range
