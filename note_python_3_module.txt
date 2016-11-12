@@ -1,4 +1,4 @@
-############################[模組套件與程式]############################
+############################[模組套件與程式, 物件與類別]############################
 # print sys args
 '''
 import sys
@@ -34,4 +34,127 @@ for place in sys.path:
 # prj/__init__.py 記得建立這個
 from source import lib1, lib2
 '''
-============================
+============================ setdefault, defaultdict
+>>> tb = {'a':1,'b':2}
+>>> print(tb)
+{'a': 1, 'b': 2}
+>>> c = tb.setdefault('c',0)
+>>> c
+0
+>>> tb
+{'a': 1, 'c': 0, 'b': 2}
+>>> a = tb.setdefault('a',999)
+>>> a
+1
+>>> tb
+{'a': 1, 'c': 0, 'b': 2}
+
+>>> from collections import defaultdict
+>>> tb={}
+>>> tb['test']
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+KeyError: 'test'
+>>> tb=defaultdict(int)
+>>> tb['test']
+0
+>>> tb
+defaultdict(<class 'int'>, {'test': 0})
+>>> tb=defaultdict(lambda:0) #也可
+============================ Counter
+>>> from collections import Counter
+>>> tb=['a','a','b','a']
+>>> ct = Counter(tb)
+>>> ct
+Counter({'a': 3, 'b': 1})
+============================ OrderedDict 依序建立字典
+>>> from collection import OrderedDict
+>>> od = OrderedDict([('a',1),('b',2),('c',3)])
+>>> for i in od:
+...     print(i)
+... 
+a
+b
+c
+============================ deque
+>>> from collections import deque
+>>> tb = [1,2,3,4,5]
+>>> dq = deque(tb)
+>>> dq.popleft()
+1
+>>> dq
+deque([2, 3, 4, 5])
+>>> tb
+[1, 2, 3, 4, 5]
+>>> dq.pop()
+5
+>>> dq
+deque([2, 3, 4])
+>>> tb
+[1, 2, 3, 4, 5]
+============================ itertools
+>>> import itertools
+>>> for item in itertools.chain([1,2],['a','b']):
+...     print(item)
+... 
+1
+2
+a
+b
+>>> for item in itertools.cycle([1,2]):
+...     print(item)
+... 
+1
+2
+1
+2
+1
+2
+1
+2
+#…… loop forever
+>>> for item in itertools.accumulate([1,2,3,4]):
+...     print(item)
+... 
+1
+3
+6
+10
+>>> def multiply(a,b):
+...     return a*b
+... 
+>>> for item in itertools.accumulate([1,2,3,4],multiply):
+...     print(item)
+... 
+1
+2
+6
+24
+============================ pprint
+>>> from pprint import pprint
+>>> pprint(locals())
+{'Counter': <class 'collections.Counter'>,
+ 'OrderedDict': <class 'collections.OrderedDict'>,
+ '__builtins__': <module 'builtins' (built-in)>,
+ '__doc__': None,
+ '__loader__': <class '_frozen_importlib.BuiltinImporter'>,
+ '__name__': '__main__',
+ '__package__': None,
+ '__spec__': None,
+ 'a': 1,
+ 'c': 0,
+ 'ct': Counter({'a': 3, 'b': 1}),
+ 'defaultdict': <class 'collections.defaultdict'>,
+ 'deque': <class 'collections.deque'>,
+ 'dq': deque([2, 3, 4]),
+ 'i': 'c',
+ 'item': 24,
+ 'itertools': <module 'itertools' (built-in)>,
+ 'l': <Recursion on dict with id=4301683400>,
+ 'multiply': <function multiply at 0x101a95158>,
+ 'od': OrderedDict([('a', 1), ('b', 2), ('c', 3)]),
+ 'pprint': <function pprint at 0x101aac0d0>,
+ 'tb': [1, 2, 3, 4, 5],
+ 'txt': 'dcba'}
+>>> 
+============================ 物件與類別
