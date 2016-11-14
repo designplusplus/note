@@ -1,0 +1,268 @@
+############################[像專家一樣處理資料，與資料的去處]############################
+>>> def unicode_test(value):
+...     import unicodedata
+...     name = unicodedata.name(value)
+...     value2 = unicodedata.lookup(name)
+...     print('value="%s", name="%s", value2="%s"' % (value,name,value2))
+... 
+>>> unicode_test('A')
+value="A", name="LATIN CAPITAL LETTER A", value2="A"
+>>> unicode_test('$')
+value="$", name="DOLLAR SIGN", value2="$"
+>>> unicode_test('\u00a2')
+value="¢", name="CENT SIGN", value2="¢"
+>>> unicode_test('\u20ac')
+value="€", name="EURO SIGN", value2="€"
+>>> unicode_test('\u2603')
+value="☃", name="SNOWMAN", value2="☃"
+>>> unicode_test('\u00e9')
+value="é", name="LATIN SMALL LETTER E WITH ACUTE", value2="é"
+
+>>> place='caf\u00e9'
+>>> place
+'café'
+>>> place='caf\N{LATIN SMALL LETTER E WITH ACUTE}'
+>>> place
+'café'
+
+>>> len('é')
+1
+============================ 與外界交換資料時字元須編碼成byte與解碼成字元字串, UTF8是用1~4個bytes動態編碼
+# 編碼
+>>> snowman = '\u2603'
+>>> snowman
+'☃'
+>>> len(snowman)
+1
+>>> ds = snowman.encode('utf-8')
+>>> len(ds)
+3
+>>> ds
+b'\xe2\x98\x83'
+>>> snowman.encode('ascii')
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+UnicodeEncodeError: 'ascii' codec can't encode character '\u2603' in position 0: ordinal not in range(128)
+>>> snowman.encode('ascii','ignore')
+b''
+>>> snowman.encode('ascii','replace')
+b'?'
+>>> snowman.encode('ascii','backslashreplace')
+b'\\u2603'
+>>> snowman.encode('ascii','xmlcharrefreplace')
+b'&#9731;' #可用在網頁
+# 解碼
+>>> place = 'caf\u00e9'
+>>> place
+'café'
+>>> type(place)
+<class 'str'>
+>>> place_byte = place.encode('utf-8')
+>>> place_byte
+b'caf\xc3\xa9'
+>>> type(place_byte)
+<class 'bytes'>
+>>> len(place_byte)
+5
+>>> place2 = place_byte.decode('utf-8')
+>>> place2
+'café'
+>>> place3 = place_byte.decode('ascii')
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+UnicodeDecodeError: 'ascii' codec can't decode byte 0xc3 in position 3: ordinal not in range(128)
+>>> place4 = place_byte.decode('latin-1')
+>>> place4
+'cafÃ©'
+>>> place5 = place_byte.decode('windows-1251');
+>>> place5
+'cafГ©'
+#結論是用 UTF8 編碼與解碼
+============================ 格式
+########## 舊方式
+'''
+%s 字串
+%d 十進位整數
+%x 十六進位整數
+%o 八進位整數
+%f 十進位浮點數
+%e 指數浮點數
+%g 十進位或指數浮點數
+%% 字面%
+'''
+#整數
+>>> '%s' % 42
+'42'
+>>> '%d' % 42
+'42'
+>>> '%x' % 42
+'2a'
+>>> '%o' % 42
+'52'
+#浮點數
+>>> '%s' % 7.03
+'7.03'
+>>> '%f' % 7.03
+'7.030000'
+>>> '%e' % 7.03
+'7.030000e+00'
+>>> '%g' % 7.03
+'7.03'
+#整數與常值
+>>> '%d%%' % 100
+'100%'
+#格式化
+>>> n=42
+>>> f=7.03
+>>> s='string cheese'
+>>> '%d %f %s' % (n,f,s)
+'42 7.030000 string cheese'
+>>> '%10d %10f %10s' % (n,f,s)
+'        42   7.030000 string cheese'
+>>> '%-10d %-10f %-10s' % (n,f,s)
+'42         7.030000   string cheese'
+>>> '%10.4d %10.4f %10.4s' % (n,f,s)
+'      0042     7.0300       stri'
+>>> '%.4d %.4f %.4s' % (n,f,s)
+'0042 7.0300 stri'
+>>> '%*.*d %*.*f %*.*s' % (10,4,n,10,4,f,10,4,s)
+'      0042     7.0300       stri'
+>>> 
+########## 新方式
+>>> n=42
+>>> f=7.03
+>>> s='string cheese'
+>>> '{} {} {}'.format(n,f,s)
+'42 7.03 string cheese'
+>>> '{2} {0} {1}'.format(f,s,n)
+'42 7.03 string cheese'
+>>> '{n} {f} {s}'.format(n=42,f=7.03,s='string cheese')
+'42 7.03 string cheese'
+>>> d = {'n':42,'f':7.03,'s':'string cheese'}
+>>> '{0[n]} {0[f]} {0[s]} {1}'.format(d, 'other')
+'42 7.03 string cheese other'
+#在新方式用舊方式
+>>> '{0:d} {1:f} {2:s}'.format(n,f,s)
+'42 7.030000 string cheese'
+>>> '{n:d} {f:f} {s:s}'.format(n=42,f=7.03,s='string cheese')
+'42 7.030000 string cheese'
+>>> '{0:>10d} {1:>10f} {2:>10s}'.format(n,f,s)
+'        42   7.030000 string cheese'
+>>> '{0:<10d} {1:<10f} {2:<10s}'.format(n,f,s)
+'42         7.030000   string cheese'
+>>> '{0:^10d} {1:^10f} {2:^10s}'.format(n,f,s) #置中
+'    42      7.030000  string cheese'
+>>> '{0:10.4d} {1:10.4f} {2:10.4s}'.format(n,f,s) #d不適用.4
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+ValueError: Precision not allowed in integer format specifier
+>>> '{0:10d} {1:10.4f} {2:10.4s}'.format(n,f,s)
+'        42     7.0300 stri      '
+#字元填充
+>>> '{0:!^20s}'.format('BIG SALE')
+'!!!!!!BIG SALE!!!!!!'
+============================ 正規表示式
+>>> import re
+>>> result = re.match('you','you like me') #match只匹配開頭
+>>> result
+<_sre.SRE_Match object; span=(0, 3), match='you'>
+>>> pattern = re.compile('you') #先編譯，可提升匹配速度
+>>> result = pattern.match('you like me')
+>>> result
+<_sre.SRE_Match object; span=(0, 3), match='you'>
+
+>>> re.match("me",'you like me')
+>>> source="Young Frankenstein"
+>>> m=re.match('You',source)
+>>> if m:
+...     print(m.group())
+... 
+You
+>>> m=re.match('^You',source)
+>>> if m:
+...     print(m.group())
+... 
+You
+>>> m=re.match('Frank',source)
+>>> if m:
+...     print(m.group())
+... 
+>>> 
+>>> m=re.search('Frank',source)
+>>> if m:
+...     print(m.group())
+... 
+Frank
+>>> m=re.search('.*Frank',source)
+>>> if m:
+...     print(m.group())
+... 
+Young Frank
+>>> m=re.findall('n',source)
+>>> m
+['n', 'n', 'n', 'n']
+>>> m=re.findall('n.',source)
+>>> m
+['ng', 'nk', 'ns']
+>>> m=re.findall('n.?',source)
+>>> m
+['ng', 'nk', 'ns', 'n']
+>>> m=re.split('n',source)
+>>> m
+['You', 'g Fra', 'ke', 'stei', '']
+>>> m=re.sub('n','?',source)
+>>> m
+'You?g Fra?ke?stei?'
+
+>>> import string
+>>> printable = string.printable
+>>> len(printable)
+100
+>>> printable[0:50]
+'0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMN'
+>>> printable[50:]
+'OPQRSTUVWXYZ!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~ \t\n\r\x0b\x0c'
+>>> re.findall('\d',printable)
+['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+>>> re.findall('\w',printable)
+['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '_']
+>>> re.findall('\s',printable)
+[' ', '\t', '\n', '\r', '\x0b', '\x0c']
+>>> source='''I wish I may, I wish I might
+... Have a dish of fish tonight.'''
+>>> re.findall('wish',source)
+['wish', 'wish']
+>>> re.findall('wish|fish',source)
+['wish', 'wish', 'fish']
+>>> re.findall('^wish',source)
+[]
+>>> re.findall('^I wish',source)
+['I wish']
+>>> re.findall('fish$',source)
+[]
+>>> re.findall('fish tonight\.$',source)
+['fish tonight.']
+>>> re.findall('[wf]ish',source)
+['wish', 'wish', 'fish']
+>>> re.findall('[wfh]+',source)
+['w', 'h', 'w', 'h', 'h', 'h', 'f', 'f', 'h', 'h']
+>>> re.findall('ght\W',source)
+['ght\n', 'ght.']
+============================ byte & bytearray
+>>> blist=[1,2,3,255]
+>>> the_bytes=bytes(blist)#像tuple
+>>> the_bytes
+b'\x01\x02\x03\xff'
+>>> the_byte_array = bytearray(blist)#像串列
+>>> the_byte_array 
+bytearray(b'\x01\x02\x03\xff')
+>>> the_bytes[1]=127
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: 'bytes' object does not support item assignment
+>>> the_byte_array[1]=127
+>>> the_byte_array
+bytearray(b'\x01\x7f\x03\xff')
+
+============================ 檔案輸入輸出
+
