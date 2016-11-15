@@ -1,2 +1,225 @@
 ############################[資料交換格式，資料庫]############################
 ============================ CSV
+>>> import csv
+>>> villains = [
+...     ['Doctor','No'],
+...     ['Rosa','Klebb'],
+...     ['Mister','Big'],
+...     ['Auric','Goldfinger'],
+...     ['Ernst','Blofeld'],
+...     ]
+>>> with open('villains','wt') as fout:
+...     csvout = csv.writer(fout)
+...     csvout.writerows(villains)
+... 
+>>> 
+>>> import csv
+>>> with open('villains', 'rt') as fin:
+...     cin = csv.reader(fin)
+...     villains = [row for row in cin]
+... 
+>>> print(villains)
+[['Doctor', 'No'], ['Rosa', 'Klebb'], ['Mister', 'Big'], ['Auric', 'Goldfinger'], ['Ernst', 'Blofeld']]
+>>>
+>>> import csv
+>>> with open('villains', 'rt') as fin:
+...     cin = csv.DictReader(fin, fieldnames=['first','last'])
+...     villains = [row for row in cin]
+... 
+>>> print(villains)
+[{'last': 'No', 'first': 'Doctor'}, {'last': 'Klebb', 'first': 'Rosa'}, {'last': 'Big', 'first': 'Mister'}, {'last': 'Goldfinger', 'first': 'Auric'}, {'last': 'Blofeld', 'first': 'Ernst'}]
+>>> 
+>>> import csv
+>>> villains = [
+...     {'first':'Doctor', 'last':'No'},
+...     {'first':'Rosa', 'last':'Klebb'},
+...     {'first':'Mister', 'last':'Big'},
+...     {'first':'Auric', 'last':'Goldfinger'},
+...     {'first':'Ernst', 'last':'Blofeld'}
+...     ]
+>>> with open('villains', 'wt') as fout:
+...     cout = csv.DictWriter(fout, ['first','last'])
+...     cout.writeheader()
+...     cout.writerows(villains)
+... 
+>>>
+>>> import csv
+>>> with open('villains', 'rt') as fin:
+...     cin = csv.DictReader(fin)
+...     villains = [row for row in cin]
+... 
+>>> print(villains)
+[{'last': 'No', 'first': 'Doctor'}, {'last': 'Klebb', 'first': 'Rosa'}, {'last': 'Big', 'first': 'Mister'}, {'last': 'Goldfinger', 'first': 'Auric'}, {'last': 'Blofeld', 'first': 'Ernst'}]
+>>> 
+============================ XML (參考 defusedxml, 可安全parse)
+#### menu.xml
+<?xml version="1.0"?>
+<menu>
+	<breakfast hours="7-11">
+		<item price="$6.00">breakfast burritos</item>
+		<item price="$4.00">pancakes</item>
+	</breakfast>
+	<lunch hours="11-3">
+		<item price="$5.00">hamburger</item>
+	</lunch>
+	<dinner hours="3-10">
+		<item price="$8.00">spaghetti</item>
+	</dinner>
+</menu>
+####
+>>> import xml.etree.ElementTree as et
+>>> tree = et.ElementTree(file='menu.xml')
+>>> root = tree.getroot()
+>>> root.tag
+'menu'
+>>> for child in root:
+...     print('tag:',child.tag,'attributes',child.attrib)
+... 
+tag: breakfast attributes {'hours': '7-11'}
+tag: lunch attributes {'hours': '11-3'}
+tag: dinner attributes {'hours': '3-10'}
+>>> len(root) # root sections
+3
+>>> len(root[0]) # breakfast items
+2
+============================ HTML
+talk later
+============================ JSON
+>>> menu = \
+... {
+... "breakfast":{
+...     "hours":"7-11",
+...     "items":{
+...             "breakfast burritos":"$6.00",
+...             "pancakes":"$4.00"
+...             }
+...     },
+... "lunch":{
+...     "hours":"11-3",
+...     "items":{
+...             "hamburgur":"$5.00"
+...             }
+...     },
+... "dinner":{
+...     "hours":"3-10",
+...     "items":{
+...             "spaghetti":"$8.00"
+...             }
+...     }
+... }
+>>> 
+>>> import json
+>>> menu_json = json.dumps(menu)
+>>> menu_json
+'{"lunch": {"items": {"hamburgur": "$5.00"}, "hours": "11-3"}, "breakfast": {"items": {"breakfast burritos": "$6.00", "pancakes": "$4.00"}, "hours": "7-11"}, "dinner": {"items": {"spaghetti": "$8.00"}, "hours": "3-10"}}'
+>>> 
+>>> menu2 = json.loads(menu_json)
+>>> menu2
+{'breakfast': {'items': {'breakfast burritos': '$6.00', 'pancakes': '$4.00'}, 'hours': '7-11'}, 'lunch': {'items': {'hamburgur': '$5.00'}, 'hours': '11-3'}, 'dinner': {'items': {'spaghetti': '$8.00'}, 'hours': '3-10'}}
+>>> 
+#### datetime tp jsons
+>>> import datetime
+>>> now = datetime.datetime.utcnow()
+>>> now_str=str(now)
+>>> now
+datetime.datetime(2016, 11, 15, 13, 53, 25, 33449)
+>>> now_str
+'2016-11-15 13:53:25.033449'
+>>> json.dumps(now_str)
+'"2016-11-15 13:53:25.033449"'
+>>> from time import mktime
+>>> now_epoch = int(mktime(now.timetuple()))
+>>> now_epoch
+1479189205
+>>> json.dumps(now_epoch)
+'1479189205'
+>>> 
+>>> type(now)
+<class 'datetime.datetime'>
+>>> isinstance(now, datetime.datetime)
+True
+============================ 設定檔
+#### settings.cfg
+[english]
+greeting = Hello
+
+[french]
+greeting = Bonjour
+
+[files]
+home = /usr/local
+# simple interpolation:
+bin = %(home)s/bin
+#### 
+>>> import configparser
+>>> cfg = configparser.ConfigParser()
+>>> cfg.read('settings.cfg')
+['settings.cfg']
+>>> cfg
+<configparser.ConfigParser object at 0x102198400>
+>>> cfg['french']
+<Section: french>
+>>> cfg['french']['greeting']
+'Bonjour'
+>>> cfg['files']['bin']
+'/usr/local/bin'
+============================ 序列化
+>>> import pickle
+>>> import datetime
+>>> now1 = datetime.datetime.utcnow()
+>>> pickled = pickle.dumps(now1)
+>>> now2 = pickle.loads(pickled)
+>>> now1
+datetime.datetime(2016, 11, 15, 14, 8, 34, 536766)
+>>> now2
+datetime.datetime(2016, 11, 15, 14, 8, 34, 536766)
+>>>
+>>> import pickle
+>>> class Obj:
+...     def __str__(self):
+...             return 'tiny'
+... 
+>>> obj1 = Obj()
+>>> obj1
+<__main__.Obj object at 0x10230c7f0>
+>>> str(obj1)
+'tiny'
+>>> pickled = pickle.dumps(obj1) # 二進位化
+>>> pickled
+b'\x80\x03c__main__\nObj\nq\x00)\x81q\x01.'
+>>> obj2 = pickle.loads(pickled) # 建立副本
+>>> obj2
+<__main__.Obj object at 0x102311518>
+>>> str(obj2)
+'tiny'
+============================ 關聯式資料庫 (可參考SQLAlchemy, pip install sqlalchemy)
+>>> import sqlite3
+>>> conn = sqlite3.connect('enterprise.db')
+>>> curs = conn.cursor()
+>>> curs.execute('''create table zoo
+... (critter varchar(20) primary key,
+... count int,
+... damages float)''')
+<sqlite3.Cursor object at 0x1022cef10>
+>>> curs.execute('insert into zoo values("duck",5,0.0)')
+<sqlite3.Cursor object at 0x1022cef10>
+>>> curs.execute('insert into zoo values("bear",2,1000.0)')
+<sqlite3.Cursor object at 0x1022cef10>
+>>> ins = 'insert into zoo(critter, count, damages)values(?,?,?)'
+>>> curs.execute(ins,('weasel',1,2000.0))
+<sqlite3.Cursor object at 0x1022cef10>
+>>> curs.execute('select * from zoo')
+<sqlite3.Cursor object at 0x1022cef10>
+>>> rows = curs.fetchall()
+>>> print(rows)
+[('duck', 5, 0.0), ('bear', 2, 1000.0), ('weasel', 1, 2000.0)]
+>>> curs.execute('select * from zoo order by count')
+<sqlite3.Cursor object at 0x1022cef10>
+>>> curs.fetchall()
+[('weasel', 1, 2000.0), ('bear', 2, 1000.0), ('duck', 5, 0.0)]
+>>> curs.execute('select * from zoo order by count desc')
+<sqlite3.Cursor object at 0x1022cef10>
+>>> curs.fetchall()
+[('duck', 5, 0.0), ('bear', 2, 1000.0), ('weasel', 1, 2000.0)]
+>>> curs.close()
+>>> conn.close()
