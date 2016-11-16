@@ -1,4 +1,4 @@
-############################[資料交換格式，資料庫]############################
+############################[資料交換格式，資料庫，web]############################
 ============================ CSV
 >>> import csv
 >>> villains = [
@@ -223,3 +223,125 @@ b'\x80\x03c__main__\nObj\nq\x00)\x81q\x01.'
 [('duck', 5, 0.0), ('bear', 2, 1000.0), ('weasel', 1, 2000.0)]
 >>> curs.close()
 >>> conn.close()
+
+############################[WEB]############################
+>>> import urllib.request as ur
+>>> url='http://www.google.com/‘
+>>> conn=ur.urlopen(url)
+>>> print(conn)
+<http.client.HTTPResponse object at 0x101e14630>
+>>> conn.read()
+b'<!doctype html><html itemscope="" itemtype="http://schema.org/WebPage" lang="zh-TW"><head><meta content="text/html; charset=UTF-8" http-equiv="Content-Type"><meta content="/images/branding/googleg/1x/googleg_standard_color_128dp.png" itemprop="image"><title>Google</title><script>(func ……
+>>> print(conn.status)
+200
+>>> print(conn.getheader('Content-Type'))
+text/html; charset=Big5
+>>> for key, value in conn.getheaders():
+...     print(key, value)
+... 
+Date Wed, 16 Nov 2016 11:40:19 GMT
+Expires -1
+Cache-Control private, max-age=0
+Content-Type text/html; charset=Big5
+P3P CP="This is not a P3P policy! See https://www.google.com/support/accounts/answer/151657?hl=en for more info."
+Server gws
+X-XSS-Protection 1; mode=block
+X-Frame-Options SAMEORIGIN
+Set-Cookie NID=91=W7qCYwVT6d2Wpu9AceBYG4F9_cLQ34PfaxieDVgMbu4Go88pe5fecVabiGHDkaZ2zRLbxUQfNcOAvxei-FfxMXphp5fU6bEzVBxDUlsGeevt9pMuT2oqpfMsJuAjqVkr; expires=Thu, 18-May-2017 11:40:19 GMT; path=/; domain=.google.com.tw; HttpOnly
+Accept-Ranges none
+Vary Accept-Encoding
+Connection close
+>>> 
+#### pip install requests (another choose)
+>>> import requests
+>>> url = 'http://www.google.com/'
+>>> resp = requests.get(url)
+>>> resp
+<Response [200]>
+>>> print(resp.text)
+<!doctype html><html itemscope="" itemtype="http://schema.org/WebPage" lang="zh-TW"><head><meta content="text/html; charset=UTF-8" http-equiv="Content-Type"><meta content="/images/branding/googleg/1x/goo……
+>>>
+============================ Web Server
+cmd:python3 -m http.server [8000] #[]可以指定port
+chrome:http://localhost:8000/
+
+============================ pip install bottle (web框架)
+#### bottle1.py
+from bottle import route, run
+
+@route('/')
+def home():
+    return "It isn't fancy, but it's my home page"
+
+run(host='localhost',port=9999)
+#### python3 bottle1.py
+#### Bottle v0.12.10 server starting up (using WSGIRefServer())...
+#### Listening on http://localhost:9999/
+————————————
+#### bottle1.py
+from bottle import route, run, static_file
+
+@route('/')
+def home():
+    return static_file('index.html', root='.')
+
+run(host='localhost',port=9999)
+#### python3 bottle1.py
+#### Bottle v0.12.10 server starting up (using WSGIRefServer())...
+#### Listening on http://localhost:9999/
+————————————
+#### bottle1.py
+from bottle import route, run, static_file
+
+@route('/')
+def home():
+    return static_file('index.html', root='.')
+
+@route('/echo/<thing>')
+def echo(thing):
+    return 'say hello to my little friend: %s' % thing
+
+run(host='localhost',port=9999)
+#### python3 bottle1.py
+#### Bottle v0.12.10 server starting up (using WSGIRefServer())...
+#### Listening on http://localhost:9999/
+#### http://localhost:9999/echo/Edwin
+#### display: say hello to my little friend: Edwin
+>>> import requests
+>>> resp = requests.get('http://localhost:9999/echo/Edwin')
+>>> if(resp.status_code==200 and resp.text=='say hello to my little friend: Edwin'):
+...     print('good!')
+... 
+good!
+
+============================ pip install flask (web框架)
+#### flask1.py
+from flask import Flask
+app = Flask(__name__, static_folder='.', static_url_path='')
+
+@app.route('/')
+def home():
+	return app.send_static_file('index.html')
+
+@app.route('/echo/<thing>')
+def echo(thing):
+	return thing
+
+app.run(port=9999, debug=True)
+#### python3 bottle1.py
+#### * Running on http://127.0.0.1:9999/ (Press CTRL+C to quit)
+#### * Restarting with stat
+#### * Debugger is active!
+#### * Debugger pin code: 674-991-295
+
+============================ web 服務自動化, pip install beautifulsoup4
+>>> import webbrowser
+>>> url = 'http://www.google.com'
+>>> webbrowser.open(url)
+True
+>>> webbrowser.open_new(url)
+True
+>>> webbrowser.open_new_tab(url)
+True
+
+============================ pip freeze | xargs pip uninstall -y 清空 pip 裡套件
