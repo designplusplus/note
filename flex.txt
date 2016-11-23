@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="init()">
+	<mx:Script>
+		<![CDATA[
+			import flash.display.Sprite;
+			import flash.text.TextLineMetrics;
+			import mx.core.FlexGlobals;
+			import flash.external.ExternalInterface;
+			import mx.core.UIComponent;
+			
+			private function init():void{
+				myText.text = "asxcascxaswcapscascasc:)ascascascascascascascasc";
+				myText.width = 150;
+				var s:UIComponent = new UIComponent;
+				s.graphics.beginFill(0xFFCC00);
+				s.graphics.drawRect(0, 0, 50, 50);
+				s.graphics.endFill();
+				s.alpha = 0.1;
+				s.x = 10
+				myText.addChild(s);
+				callLater(function():void{
+					var lm:TextLineMetrics = myText.getLineMetrics(0);
+					myText.text += ":" + lm.width + ":" + lm.height + ":" + myText.textHeight+":"+myText.textWidth;					
+				})
+			}
+		]]>
+	</mx:Script>
+	<mx:Text id="myText"></mx:Text>
+</mx:Application>
