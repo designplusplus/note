@@ -27,3 +27,63 @@
 	</mx:Script>
 	<mx:Text id="myText"></mx:Text>
 </mx:Application>
+
+
+—————————————————
+
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="init()">
+	<mx:Script>
+		<![CDATA[
+			import flash.display.LineScaleMode;
+			import flash.display.Sprite;
+			import flash.geom.Rectangle;
+			import flash.text.TextField;
+			import flash.text.TextFormat;
+			import flash.text.TextLineMetrics;
+			import mx.core.FlexGlobals;
+			import flash.external.ExternalInterface;
+			import mx.core.UIComponent;
+				
+			
+			private function init():void{
+				var ss:String = "0123456789abcdefghijklmnopqrstuvwxyz";
+				var tft:TextFormat = new TextFormat;
+				tft.size = 12;
+				tft.font = "Arial"
+				var tf:TextField = new TextField;
+				tf.width = 150;
+				tf.text = ss;
+				tf.wordWrap = true;
+				tf.setTextFormat(tft);
+				var uic:UIComponent = new UIComponent();
+				uic.addChild(tf);
+				this.addChildAt(uic, 0);
+				myText.text = ss;
+				myText.width = 150;
+				myText.setStyle("fontSize", 12);
+				var s:UIComponent = new UIComponent;
+				s.graphics.beginFill(0xFFCC00);
+				s.graphics.drawRect(0, 0, 50, 50);
+				s.graphics.endFill();
+				s.alpha = 0.1;
+				s.x = 10
+				myText.addChild(s);
+				callLater(function():void{
+					var c:Number = 0;
+					for (var i:int = 0; i < ss.length; i++ )
+					{
+						var r:Rectangle = tf.getCharBoundaries(i);
+						c += r.width;
+						myText2.text += ss.charAt(i)+":" + c + "\n";
+					}
+					
+					var lm:TextLineMetrics = myText.getLineMetrics(0);
+					myText.text += "\n:" + lm.width + ":" + lm.height + ":" + myText.textHeight+":"+myText.textWidth;					
+				})
+			}
+		]]>
+	</mx:Script>
+	<mx:Text id="myText"></mx:Text>
+	<mx:Text id="myText2"></mx:Text>
+</mx:Application>
