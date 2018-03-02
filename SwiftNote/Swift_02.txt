@@ -1,0 +1,273 @@
+/**********************************
+ * 控制流
+ **********************************/
+let m_names = ["Anna", "Alex", "Brian", "Jack"]
+for name in m_names {
+    print("Hello, \(name)!")
+}
+let numberOfLegs = ["spider": 8, "ant": 6, "cat": 4]
+for (animalName, legCount) in numberOfLegs {
+    print("\(animalName)s have \(legCount) legs")
+}
+for index in 1...5 {
+    print("\(index) times 5 is \(index * 5)")
+}
+let minutes = 60
+let minuteInterval = 5
+for tickMark in stride(from: 0, to: minutes, by: minuteInterval) { // 未包含 minutes
+    print(tickMark)
+}
+let hours = 12
+let hourInterval = 3
+for tickMark in stride(from: 3, through: hours, by: hourInterval) { // 包含 hours
+    print(tickMark)
+}
+while true{
+    break
+}
+repeat{
+    break
+} while true
+let someCharacter: Character = "z"
+switch someCharacter {
+case "a":
+    print("The first letter of the alphabet")
+case "z":
+    print("The last letter of the alphabet")
+default:
+    print("Some other character")
+}
+let anotherCharacter: Character = "a"
+switch anotherCharacter {
+case "a", "A":
+    print("The letter A")
+default:
+    print("Not the letter A")
+}
+let approximateCount = 62
+let countedThings = "moons orbiting Saturn"
+var naturalCount: String
+switch approximateCount {
+case 0:
+    naturalCount = "no"
+case 1..<5:
+    naturalCount = "a few"
+case 5..<12:
+    naturalCount = "several"
+case 12..<100:
+    naturalCount = "dozens of"
+case 100..<1000:
+    naturalCount = "hundreds of"
+default:
+    naturalCount = "many"
+}
+print("There are \(naturalCount) \(countedThings).")
+let somePoint = (1, 1)
+switch somePoint {
+case (0, 0):
+    print("(0, 0) is at the origin")
+case (_, 0):
+    print("(\(somePoint.0), 0) is on the x-axis")
+case (0, _):
+    print("(0, \(somePoint.1)) is on the y-axis")
+case (-2...2, -2...2):
+    print("(\(somePoint.0), \(somePoint.1)) is inside the box")
+default:
+    print("(\(somePoint.0), \(somePoint.1)) is outside of the box")
+}
+let anotherPoint = (2, 0)
+switch anotherPoint { // 值綁定
+case (let x, 0):
+    print("on the x-axis with an x value of \(x)")
+case (0, let y):
+    print("on the y-axis with a y value of \(y)")
+case let (x, y):
+    print("somewhere else at (\(x), \(y))")
+}
+let yetAnotherPoint = (1, -1)
+switch yetAnotherPoint {
+case let (x, y) where x == y:
+    print("(\(x), \(y)) is on the line x == y")
+case let (x, y) where x == -y:
+    print("(\(x), \(y)) is on the line x == -y")
+case let (x, y):
+    print("(\(x), \(y)) is just some arbitrary point")
+}
+let stillAnotherPoint = (9, 0)
+switch stillAnotherPoint {
+case (let distance, 0), (0, let distance):
+    print("On an axis, \(distance) from the origin")
+default:
+    print("Not on an axis")
+}
+let integerToDescribe = 5
+var description = "The number \(integerToDescribe) is"
+switch integerToDescribe {
+case 2, 3, 5, 7, 11, 13, 17, 19:
+    description += " a prime number, and also"
+    fallthrough // 保有C一樣的穿透風格
+default:
+    description += " an integer."
+}
+print(description)
+func greet(person: [String: String]) {
+    guard let name = person["name"] else { // guard 表示保證有值
+        return
+    }
+    print("Hello \(name)!")
+    guard let location = person["location"] else {
+        print("I hope the weather is nice near you.")
+        return
+    }
+    print("I hope the weather is nice in \(location).")
+}
+if #available(iOS 10, macOS 10.12, *) {
+    // Use iOS 10 APIs on iOS, and use macOS 10.12 APIs on macOS
+} else {
+    // Fall back to earlier iOS and macOS APIs
+}
+/**********************************
+ * 函數
+ **********************************/
+func minMax(array: [Int]) -> (min: Int, max: Int)?{ //加?變可選
+    var currentMin = array[0]
+    var currentMax = array[0]
+    for value in array[1..<array.count] {
+        if value < currentMin {
+            currentMin = value
+        } else if value > currentMax {
+            currentMax = value
+        }
+    }
+    return (currentMin, currentMax)
+}
+if let bounds = minMax(array: [8, -6, 2, 109, 3, 71]) {
+    print("min is \(bounds.min) and max is \(bounds.max)")
+}
+func greet(person: String, from hometown: String) -> String { // from 為參數標籤
+    return "Hello \(person)!  Glad you could visit from \(hometown)."
+}
+print(greet(person: "Bill", from: "Cupertino"))
+func someFunction(_ firstParameterName: Int, secondParameterName: Int) {} // _為省略標籤
+someFunction(1, secondParameterName: 2)
+func someFunction(parameterWithDefault: Int = 12) {} // 預設值
+func arithmeticMean(_ numbers: Double...) -> Double { // 多參數
+    var total: Double = 0
+    for number in numbers {
+        total += number
+    }
+    return total / Double(numbers.count)
+}
+arithmeticMean(1, 2, 3, 4, 5)
+func swapTwoInts(_ a: inout Int, _ b: inout Int) {
+    let temporaryA = a
+    a = b
+    b = temporaryA
+}
+var someInt = 3
+var anotherInt = 107
+swapTwoInts(&someInt, &anotherInt)
+print("someInt is now \(someInt), and anotherInt is now \(anotherInt)") // 輸入輸出形式參數
+func addTwoInts(_ a: Int, _ b: Int) -> Int {
+    return a + b
+}
+var mathFunction: (Int, Int) -> Int = addTwoInts // 函式宣告
+func printHelloWorld() {
+    print("hello, world")
+}
+var printFunction:() -> Void = printHelloWorld //函式宣告2
+func printMathResult(_ mathFunction: (Int, Int) -> Int, _ a: Int, _ b: Int) {
+    print("Result: \(mathFunction(a, b))")
+}
+printMathResult(addTwoInts, 3, 5) // 函式作為參數類型
+func stepForward(_ input: Int) -> Int {
+    return input + 1
+}
+func stepBackward(_ input: Int) -> Int {
+    return input - 1
+}
+func chooseStepFunction(backwards: Bool) -> (Int) -> Int {
+    return backwards ? stepBackward : stepForward // 函式作為返回類型
+}
+func chooseStepFunctionA(backward: Bool) -> (Int) -> Int { // 內嵌函式
+    func stepForwardA(input: Int) -> Int { return input + 1 }
+    func stepBackwardA(input: Int) -> Int { return input - 1 }
+    return backward ? stepBackwardA : stepForwardA
+}
+/**********************************
+ * 閉包
+ 全局函数是一个有名字但不会捕获任何值的闭包；
+ 内嵌函数是一个有名字且能从其上层函数捕获值的闭包；
+ 闭包表达式是一个轻量级语法所写的可以捕获其上下文中常量或变量值的没有名字的闭包。
+ **********************************/
+let names = ["Chris","Alex","Ewa","Barry","Daniella"]
+func backward(_ s1: String, _ s2: String) -> Bool {
+    return s1 > s2
+}
+var reversedNames = names.sorted(by: backward) // 一般寫法
+reversedNames = names.sorted(by: { (s1: String, s2: String) -> Bool in return s1 > s2}) // 閉包寫法
+reversedNames = names.sorted(by: { s1, s2 in return s1 > s2 } ) // 簡寫
+reversedNames = names.sorted(by: { s1, s2 in s1 > s2 } ) // 簡寫(單行可省return)
+reversedNames = names.sorted(by: { $0 > $1 } ) // 簡寫(參數可用$0,$1,$2...取代)
+reversedNames = names.sorted(by: >) // 簡寫(只留下運算符)
+/*
+func someFunctionThatTakesAClosure(closure:() -> Void){
+//function body goes here
+}
+//here's how you call this function without using a trailing closure
+someFunctionThatTakesAClosure({
+    //closure's body goes here
+})
+//here's how you call this function with a trailing closure instead
+someFunctionThatTakesAClosure() {
+    // trailing closure's body goes here
+}
+ */ // 進化成尾隨閉包 {} 在最後
+reversedNames = names.sorted() { $0 > $1 }
+reversedNames = names.sorted{ $0 > $1 }
+// 捕获值(內嵌函式存取 runningTotal)
+func makeIncrementer(forIncrement amount: Int) -> () -> Int {
+    var runningTotal = 0
+    func incrementer() -> Int {
+        runningTotal += amount
+        return runningTotal
+    }
+    return incrementer
+}
+let incrementByTen = makeIncrementer(forIncrement: 10)
+incrementByTen()
+incrementByTen()
+incrementByTen()
+let incrementBySeven = makeIncrementer(forIncrement: 7)
+incrementBySeven()
+let alsoIncrementByTen = incrementByTen
+alsoIncrementByTen() // 閉包仍繼續引用
+var completionHandlers: [() -> Void] = [] // 閉包會在後續使用叫閉包逃逸, 帶參數時要加 @escaping
+func someFunctionWithEscapingClosure(completionHandler: @escaping () -> Void) {
+    completionHandlers.append(completionHandler)
+}
+// 自動閉包 會延遲求值
+var customersInLine = ["Chris", "Alex", "Ewa", "Barry", "Daniella"]
+print(customersInLine.count)
+// Prints "5"
+let customerProvider = { customersInLine.remove(at: 0) } // 自動閉包寫法
+print(customersInLine.count)
+// Prints "5"
+print("Now serving \(customerProvider())!")
+// Prints "Now serving Chris!"
+print(customersInLine.count)
+// Prints "4"
+
+// customersInLine is ["Alex", "Ewa", "Barry", "Daniella"] 寫法1
+func serve(customer customerProvider: () -> String) {
+    print("Now serving \(customerProvider())!")
+}
+serve(customer: { customersInLine.remove(at: 0) } )
+// Prints "Now serving Alex!"
+
+// customersInLine is ["Ewa", "Barry", "Daniella"] 寫法2 用 @autoclosure
+func serve(customer customerProvider: @autoclosure () -> String) {
+    print("Now serving \(customerProvider())!")
+}
+serve(customer: customersInLine.remove(at: 0))
+// Prints "Now serving Ewa!"

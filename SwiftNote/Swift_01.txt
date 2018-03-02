@@ -1,0 +1,207 @@
+/**********************************
+ * 基礎內容
+ **********************************/
+let maxCount = 10 // 常量, 編譯器會自動判斷類型
+var currentCount = 0 // 變量
+var message:String = "Hello" // 類型宣告
+var red, green, blue:Double // 類型同時宣告
+let 🐶🐮 = "dogcow" // 變數可用特殊文字宣告
+print(123) // 資料輸出方式
+print(1,2,3,separator:"-",terminator:";") // 多資料輸出(可設定分隔符號)
+print("num is : \(2-1)") // 字串內使用運算或變數
+"1";"2" // 多個敘述在同一行可用;隔開
+Int.max // 整數最大值
+Int.min // 整數最小值
+UInt.max // 無負號整數最大值
+UInt.min // 無負號整數最小值 0
+// Double 有至少 15 位数字的精度，而 Float 的精度只有 6 位
+typealias AudioSample = Int // 別名 AudioSample.max
+let a = true // 布林
+if a {"a!"} // 判斷式沒括弧
+let b = 1
+//if b {"b!"} // 判斷式只能為布林
+let http404Error = (404, "Not Found")
+let (statusCode, statusMessage) = http404Error
+"The status code is \(statusCode)"
+"The status message is \(statusMessage)"
+let (justTheStatusCode, _) = http404Error // _表示無視該變數
+"The status code is \(justTheStatusCode)"
+let http200Status = (statusCode: 200, description: "OK")
+http200Status.statusCode
+http200Status.description
+var serverResponseCode:Int? = 404 // 可選項可以存放有值或 nil
+//serverResponseCode = nil
+if let actualNumber = serverResponseCode { // 判斷式用 let 或 var 宣告叫可選項綁定
+    "actualNumber has an integer value of \(actualNumber)"
+} else {
+    "actualNumber is nil"
+}
+Int("4") // 4
+Int("test") // nil
+if let firstNumber = Int("4"), let secondNumber = Int("42"), firstNumber < secondNumber && secondNumber < 100 { // 多個選項綁定
+    "\(firstNumber) < \(secondNumber) < 100"
+}
+var option:Int? = 10
+option! // 加！表示展開可選項
+let possibleString: String? = "An optional string."
+let forcedString: String = possibleString! // requires an exclamation mark
+let assumedString: String! = "An implicitly unwrapped optional string."
+let implicitString: String = assumedString // no need for an exclamation mark
+/**********************************
+ * 基本運算符
+ **********************************/
+let (x, y) = (1, 2)
+let sb = "red"
+var sa: String? // defaults to nil
+sa ?? sb // 同意於 a != nil ? a! : b
+for index in 1...5 { // 區間運算符 1~5
+    print("\(index) times 5 is \(index * 5)")
+}
+for index in 1..<5 { // 半開區間運算符 1~4
+    print("\(index) times 5 is \(index * 5)")
+}
+let names = ["Anna", "Alex", "Brian", "Jack"]
+for name in names[2...] { // 單側區間 2,3
+    print(name)
+}
+for name in names[...2] { // 單側區間 0,1,2
+    print(name)
+}
+let range = ...5
+range.contains(7)   // false
+range.contains(4)   // true
+range.contains(-1)  // true
+/**********************************
+ * 字符串和字符
+ **********************************/
+// 多行字串
+let quotation = """
+The White Rabbit put on his spectacles.  "Where shall I begin,
+please your Majesty?" he asked.
+
+"Begin at the beginning," the King said gravely, "and go on
+till you come to the end; then stop."
+"""
+var str = "test" // 宣告
+str.isEmpty // 方法
+str += "!" // 字串連接
+str.append("?")
+str.count
+str[str.startIndex]
+str[str.index(before: str.endIndex)]
+let idx = str.index(str.startIndex, offsetBy: 2)
+str[idx]
+var welcome = "hello"
+welcome.insert("!", at: welcome.endIndex)
+for character in "Dog!🐶" { // 遍歷字元
+    print(character)
+}
+let exclamationMark: Character = "!" // 字元宣告
+"\u{1F496}"
+// 子字串
+let greeting = "Hello, world!"
+let index = greeting.index(of: ",") ?? greeting.endIndex
+let beginning = greeting[..<index]
+let newString = String(beginning)
+// 篩選字串
+let romeoAndJuliet = [
+    "Act 1 Scene 1: Verona, A public place",
+    "Act 1 Scene 2: Capulet's mansion",
+    "Act 1 Scene 3: A room in Capulet's mansion",
+    "Act 1 Scene 4: A street outside Capulet's mansion",
+    "Act 1 Scene 5: The Great Hall in Capulet's mansion",
+    "Act 2 Scene 1: Outside Capulet's mansion",
+    "Act 2 Scene 2: Capulet's orchard",
+    "Act 2 Scene 3: Outside Friar Lawrence's cell",
+    "Act 2 Scene 4: A street in Verona",
+    "Act 2 Scene 5: Capulet's mansion",
+    "Act 2 Scene 6: Friar Lawrence's cell"
+]
+var act1SceneCount = 0
+for scene in romeoAndJuliet {
+    if scene.hasPrefix("Act 1 ") {
+        act1SceneCount += 1
+    }
+}
+"There are \(act1SceneCount) scenes in Act 1"
+/**********************************
+ * 集合类型
+ **********************************/
+var otherInts = Array<Int>() // 空陣列寫法1
+var someInts = [Int]() // 空陣列寫法2
+someInts.append(3)
+someInts=[] // 設為空陣列, 仍為 Int 型態
+var threeDoubles = Array(repeating: 0.0, count: 3)
+var anotherThreeDoubles = Array(repeating: 2.5, count: 3)
+threeDoubles + anotherThreeDoubles // 陣列合併
+var shoppingList: [String] = ["Eggs", "Milk"]
+shoppingList.count
+shoppingList.isEmpty
+shoppingList.append("Flour")
+shoppingList += ["Baking Powder"]
+shoppingList += ["Chocolate Spread", "Cheese", "Butter"]
+var firstItem = shoppingList[0]
+shoppingList[0] = "Six eggs"
+shoppingList
+shoppingList[4...6] = ["Bananas", "Apples"]
+shoppingList
+shoppingList.insert("Maple Syrup", at: 0)
+let mapleSyrup = shoppingList.remove(at: 0)
+shoppingList
+let apples = shoppingList.removeLast()
+shoppingList
+for item in shoppingList {
+    print(item)
+}
+for (index, value) in shoppingList.enumerated() {
+    print("Item \(index + 1): \(value)")
+}
+var letters = Set<Character>() // 空集合
+letters.insert("a")
+letters = [] // 設為空集合, 仍為 Character 型態
+var favoriteGenres: Set<String> = ["Rock", "Classical", "Hip hop"]
+var favoriteGenres2: Set = ["Rock", "Classical", "Hip hop"] // 簡寫
+favoriteGenres.count
+favoriteGenres.isEmpty
+favoriteGenres.insert("Jazz")
+favoriteGenres.contains("Rock")
+favoriteGenres.remove("Rock")
+for genre in favoriteGenres {
+    print("\(genre)")
+}
+for genre in favoriteGenres.sorted() {
+    print("\(genre)")
+}
+let oddDigits: Set = [1, 3, 5, 7, 9]
+let evenDigits: Set = [0, 2, 4, 6, 8]
+let singleDigitPrimeNumbers: Set = [2, 3, 5, 7]
+oddDigits.union(evenDigits).sorted()
+oddDigits.intersection(evenDigits).sorted()
+oddDigits.subtracting(singleDigitPrimeNumbers).sorted()
+oddDigits.symmetricDifference(singleDigitPrimeNumbers).sorted()
+var namesOfIntegers = [Int: String]() // 空字典
+namesOfIntegers[16] = "sixteen"
+namesOfIntegers = [:] // 空字典寫法2
+var airports: [String: String] = ["YYZ": "Toronto Pearson", "DUB": "Dublin"]
+airports.count
+airports.isEmpty
+if let oldValue = airports.updateValue("Dublin Airport", forKey: "DUB") {
+    print("The old value for DUB was \(oldValue).")
+}
+airports["APL"] = nil // 移除鍵值
+if let removedValue = airports.removeValue(forKey: "DUB") {
+    "The removed airport's name is \(removedValue)."
+} else {
+    "The airports dictionary does not contain a value for DUB."
+}
+for airportCode in airports.keys {
+    print("Airport code: \(airportCode)")
+}
+for airportName in airports.values {
+    print("Airport name: \(airportName)")
+}
+for (airportCode, airportName) in airports {
+    print("\(airportCode): \(airportName)")
+}
+let airportCodes = [String](airports.keys) // 建立陣列
+let airportNames = [String](airports.values)

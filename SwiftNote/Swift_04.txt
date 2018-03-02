@@ -1,0 +1,170 @@
+/**********************************
+ * 下標
+ 下表脚本允许你通过在实例名后面的方括号[]内写一个或多个值对该类的实例进行查询
+ **********************************/
+struct TimesTable {
+    let multiplier: Int
+    subscript(index: Int) -> Int {
+        return multiplier * index
+    }
+}
+let threeTimesTable = TimesTable(multiplier: 3)
+print("six times three is \(threeTimesTable[6])") // 用[]
+struct Matrix {
+    let rows: Int, columns: Int
+    var grid: [Double]
+    init(rows: Int, columns: Int) {
+        self.rows = rows
+        self.columns = columns
+        grid = Array(repeating: 0.0, count: rows * columns)
+    }
+    func indexIsValid(row: Int, column: Int) -> Bool {
+        return row >= 0 && row < rows && column >= 0 && column < columns
+    }
+    subscript(row: Int, column: Int) -> Double {
+        get {
+            assert(indexIsValid(row: row, column: column), "Index out of range") // assert 報錯
+            return grid[(row * columns) + column]
+        }
+        set {
+            assert(indexIsValid(row: row, column: column), "Index out of range")
+            grid[(row * columns) + column] = newValue
+        }
+    }
+}
+var matrix = Matrix(rows: 2, columns: 2)
+matrix[0, 1] = 1.5
+matrix[1, 0] = 3.2
+//let someValue = matrix[2, 2] // Index out of range
+/**********************************
+ * 繼承
+ **********************************/
+class Vehicle {
+    var currentSpeed = 0.0
+    var description: String {
+        return "traveling at \(currentSpeed) miles per hour"
+    }
+    func makeNoise() {
+        // do nothing - an arbitrary vehicle doesn't necessarily make a noise
+    }
+}
+class Bicycle: Vehicle {
+    var hasBasket = false
+}
+let bicycle = Bicycle()
+bicycle.hasBasket = true
+bicycle.currentSpeed = 15.0
+print("Bicycle: \(bicycle.description)")
+class Train: Vehicle {
+    override func makeNoise() { // override 重寫方法
+        print("Choo Choo")
+    }
+}
+let train = Train()
+train.makeNoise()
+class Car: Vehicle {
+    var gear = 1
+    override var description: String { // 重寫 getter
+        return super.description + " in gear \(gear)"
+    }
+}
+class AutomaticCar: Car {
+    override var currentSpeed: Double { // 重寫屬性觀察器
+        didSet {
+            gear = Int(currentSpeed / 10.0) + 1
+        }
+    }
+}
+let automatic = AutomaticCar()
+automatic.currentSpeed = 35.0
+print("AutomaticCar: \(automatic.description)")
+// 你可以通过标记为终点来阻止一个方法、属性或者下标脚本被重写。通过在方法、属性或者下标脚本的关键字前写 final 修饰符(比如 final var ， final func ， final class func ， final subscript )。
+/**********************************
+ * 初始化
+ **********************************/
+struct Fahrenheit {
+    var temperature: Double
+    init() { // init 為初始化函示
+        temperature = 32.0
+    }
+}
+var f = Fahrenheit()
+struct Fahrenheit2 { // 簡化寫法
+    var temperature = 32.0
+}
+struct Celsius { // 自訂帶參數初始化器
+    var temperatureInCelsius: Double
+    init(fromFahrenheit fahrenheit: Double) {
+        temperatureInCelsius = (fahrenheit - 32.0) / 1.8
+    }
+    init(fromKelvin kelvin: Double) {
+        temperatureInCelsius = kelvin - 273.15
+    }
+    init(_ celsius: Double) { // 無參數標籤
+        temperatureInCelsius = celsius
+    }
+}
+let boilingPointOfWater = Celsius(fromFahrenheit: 212.0)
+// boilingPointOfWater.temperatureInCelsius is 100.0
+let freezingPointOfWater = Celsius(fromKelvin: 273.15)
+// freezingPointOfWater.temperatureInCelsius is 0.0
+let bodyTemperature = Celsius(37.0)
+class SurveyQuestion {
+    var text: String
+    var response: String?
+    init(text: String) {
+        self.text = text
+    }
+    func ask() {
+        print(text)
+    }
+}
+let cheeseQuestion = SurveyQuestion(text: "Do you like cheese?") // response會被配置nil
+struct Size {
+    var width = 0.0, height = 0.0
+}
+let twoByTwo = Size(width: 2.0, height: 2.0) // 结构体类型的成员初始化器
+
+class Food {
+    var name: String
+    init(name: String) {
+        self.name = name
+    }
+    convenience init() { // convenience 便捷初始化器
+        self.init(name: "[Unnamed]")
+    }
+}
+let namedMeat = Food(name: "Bacon")
+namedMeat.name
+let mysteryMeat = Food() // 自動調用便捷初始化器
+mysteryMeat.name
+
+class Document {
+    var name: String?
+    // this initializer creates a document with a nil name value
+    init() {}
+    // this initializer creates a document with a non-empty name value
+    init?(name: String) { // 可失敗初始化器
+        self.name = name
+        if name.isEmpty { return nil }
+    }
+}
+
+class SomeClass {
+    required init() { // required 必要初始化器
+        // initializer implementation goes here
+    }
+}
+/**********************************
+ * 反初始化
+ **********************************/
+class Player {
+    init() {
+        print("init person")
+    }
+    deinit {
+        print("dinit person")
+    }
+}
+var p:Player? = Player()
+p = nil

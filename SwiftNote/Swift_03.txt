@@ -1,0 +1,302 @@
+/**********************************
+ * 枚舉
+ **********************************/
+enum CompassPoint {
+    case north
+    case south
+    case east
+    case west
+}
+enum Planet {
+    case mercury, venus, earth, mars, jupiter, saturn, uranus, neptune // 可在同一行宣告
+}
+var directionToHead = CompassPoint.west
+directionToHead = .east // 因為知道directionToHead是CompassPoint類型, 所以直接.屬性就好
+directionToHead = .south
+switch directionToHead {
+case .north:
+    print("Lots of planets have a north")
+case .south:
+    print("Watch out for penguins")
+case .east:
+    print("Where the sun rises")
+case .west:
+    print("Where the skies are blue")
+}
+let somePlanet = Planet.earth
+switch somePlanet {
+case .earth:
+    print("Mostly harmless")
+default:
+    print("Not a safe place for humans") // switch 要全部枚舉屬性都要列舉到, 如果沒有要補上default
+}
+enum Barcode {
+    case upc(Int, Int, Int, Int) // 多參數表示
+    case qrCode(String)
+}
+var productBarcode = Barcode.upc(8, 85909, 51226, 3)
+productBarcode = .qrCode("ABCDEFGHIJKLMNOP")
+switch productBarcode {
+case .upc(let numberSystem, let manufacturer, let product, let check):
+    print("UPC: \(numberSystem), \(manufacturer), \(product), \(check).")
+case .qrCode(let productCode):
+    print("QR code: \(productCode).")
+} // switch 表示
+switch productBarcode {
+case let .upc(numberSystem, manufacturer, product, check):
+    print("UPC : \(numberSystem), \(manufacturer), \(product), \(check).")
+case let .qrCode(productCode):
+    print("QR code: \(productCode).")
+} // 提出 let 至 前方為更簡便寫法
+enum ASCIIControlCharacter: Character { // 定義原始值, 並且為 Character 類型
+    case tab = "\t"
+    case lineFeed = "\n"
+    case carriageReturn = "\r"
+}
+enum Planet2: Int {
+    case mercury = 1, venus, earth, mars, jupiter, saturn, uranus, neptune
+} // 針對數值原始值會隐式指定 venus = 2, earth = 3 ...
+enum CompassPoint2: String {
+    case north, south, east, west
+} // 針對字串原始值也會隐式指定 north = "north", south = "south" ...
+let possiblePlanet = Planet2(rawValue: 7) // 原始值初始化 ossiblePlanet的类型是 Planet?, 因為指定值不一定有東西
+enum ArithmeticExpression {
+    case number(Int)
+    indirect case addition(ArithmeticExpression, ArithmeticExpression)
+    indirect case multiplication(ArithmeticExpression, ArithmeticExpression)
+} // 遞迴枚舉用 indirect 標示
+indirect enum ArithmeticExpression2 {
+    case number(Int)
+    case addition(ArithmeticExpression2, ArithmeticExpression2)
+    case multiplication(ArithmeticExpression2, ArithmeticExpression2)
+} // 將 indirect 標示在 enum 前表示枚舉成員有需要可以遞迴
+let five = ArithmeticExpression.number(5)
+let four = ArithmeticExpression.number(4)
+let sum = ArithmeticExpression.addition(five, four)
+let product = ArithmeticExpression.multiplication(sum, ArithmeticExpression.number(2))
+func evaluate(_ expression: ArithmeticExpression) -> Int {
+    switch expression {
+    case let .number(value):
+        return value
+    case let .addition(left, right):
+        return evaluate(left) + evaluate(right)
+    case let .multiplication(left, right):
+        return evaluate(left) * evaluate(right)
+    }
+}
+print(evaluate(product))
+/**********************************
+ * 類與結構體
+ **********************************/
+class SomeClass {
+    // 類定義
+}
+struct SomeStructure {
+    // 結構定義
+}
+struct Resolution {
+    var width = 0
+    var height = 0
+}
+class VideoMode {
+    var resolution = Resolution() // 實例
+    var interlaced = false
+    var frameRate = 0.0
+    var name: String?
+}
+let someResolution = Resolution()
+let someVideoMode = VideoMode()
+"The width of someResolution is \(someResolution.width)";
+someVideoMode.resolution.width = 1280
+"The width of someVideoMode is \(someVideoMode.resolution.width)";
+let vga = Resolution(width: 640, height: 480) // 結構初始化
+// 结构体和枚举是值类型, String , Array 和 Dictionary类型是作为结构体
+// 類是引用类型
+/**********************************
+ * 屬性
+ **********************************/
+struct FixedLengthRange {
+    var firstValue: Int // 常數
+    let length: Int // 變數
+}
+var rangeOfThreeItems = FixedLengthRange(firstValue: 0, length: 3)
+rangeOfThreeItems.firstValue = 6
+//延迟存储属性的初始值在其第一次使用时才进行计算。你可以通过在其声明前标注 lazy 修饰语来表示一个延迟存储属性。
+class DataImporter {
+    var fileName = "data.txt"
+}
+class DataManager {
+    lazy var importer = DataImporter()
+    var data = [String]()
+}
+let manager = DataManager()
+manager.data.append("Some data")
+manager.data.append("Some more data")
+print(manager.importer.fileName) // 這時才初始化 importer
+// 屬性存取器 setter & getter
+struct Point {
+    var x = 0.0, y = 0.0
+}
+struct Size {
+    var width = 0.0, height = 0.0
+}
+struct Rect {
+    var origin = Point()
+    var size = Size()
+    var center: Point {
+        get {
+            let centerX = origin.x + (size.width / 2)
+            let centerY = origin.y + (size.height / 2)
+            return Point(x: centerX, y: centerY)
+        }
+        set(newCenter) {
+            origin.x = newCenter.x - (size.width / 2)
+            origin.y = newCenter.y - (size.height / 2)
+        }
+    }
+}
+var square = Rect(origin: Point(x: 0.0, y: 0.0),
+                  size: Size(width: 10.0, height: 10.0))
+let initialSquareCenter = square.center
+square.center = Point(x: 15.0, y: 15.0)
+print("square.origin is now at (\(square.origin.x), \(square.origin.y))")
+// 唯讀可省略 get
+struct Cuboid {
+    var width = 0.0, height = 0.0, depth = 0.0
+    var volume: Double {
+        return width * height * depth
+    }
+}
+let fourByFiveByTwo = Cuboid(width: 4.0, height: 5.0, depth: 2.0)
+print("the volume of fourByFiveByTwo is \(fourByFiveByTwo.volume)")
+// 屬性觀察者 willSet 会在该值被存储之前被调用。 didSet 会在一个新值被存储后被调用。
+class StepCounter {
+    var totalSteps: Int = 0 {
+        willSet(newTotalSteps) {
+            print("About to set totalSteps to \(newTotalSteps)")
+        }
+        didSet {
+            if totalSteps > oldValue  {
+                print("Added \(totalSteps - oldValue) steps")
+            }
+        }
+    }
+}
+let stepCounter = StepCounter()
+stepCounter.totalSteps = 200
+// About to set totalSteps to 200
+// Added 200 steps
+stepCounter.totalSteps = 360
+// About to set totalSteps to 360
+// Added 160 steps
+stepCounter.totalSteps = 896
+// About to set totalSteps to 896
+// Added 536 steps
+// 類型屬性語法
+struct SomeAStructure {
+    static var storedTypeProperty = "Some value."
+    static var computedTypeProperty: Int {
+        return 1
+    }
+}
+enum SomeAEnumeration {
+    static var storedTypeProperty = "Some value."
+    static var computedTypeProperty: Int {
+        return 6
+    }
+}
+class SomeAClass {
+    static var storedTypeProperty = "Some value."
+    static var computedTypeProperty: Int {
+        return 27
+    }
+    class var overrideableComputedTypeProperty: Int { // 使用 class 关键字来允许子类重写父类的实现
+        return 107
+    }
+}
+class SomeASubClass:SomeAClass{
+    override class var overrideableComputedTypeProperty: Int {
+        return 108
+    }
+}
+SomeAStructure.storedTypeProperty
+// prints "Some value."
+SomeAStructure.storedTypeProperty = "Another value."
+SomeAStructure.storedTypeProperty
+// prints "Another value."
+SomeAEnumeration.computedTypeProperty
+// prints "6"
+SomeAClass.computedTypeProperty
+// prints "27"
+SomeASubClass.overrideableComputedTypeProperty
+// prints "108"
+/**********************************
+ * 方法
+ **********************************/
+class Counter {
+    var count = 0
+    func increment() {
+        count += 1
+    }
+    func increment(by amount: Int) {
+        self.count += amount // self 指類別本身
+    }
+    func reset() {
+        count = 0
+    }
+}
+let counter = Counter()
+// the initial counter value is 0
+counter.increment()
+// the counter's value is now 1
+counter.increment(by: 5)
+// the counter's value is now 6
+counter.reset()
+// the counter's value is now 0
+struct PointA {
+    var x = 0.0, y = 0.0
+    mutating func moveBy(x deltaX: Double, y deltaY: Double) {
+        // struct 為值類型不能被自身的实例方法修改, 但補上 mutating 即可
+        x += deltaX
+        y += deltaY
+    }
+}
+var somePoint = PointA(x: 1.0, y: 1.0)
+somePoint.moveBy(x: 2.0, y: 3.0)
+print("The point is now at (\(somePoint.x), \(somePoint.y))")
+struct Point2 {
+    var x = 0.0, y = 0.0
+    mutating func moveBy(x deltaX: Double, y deltaY: Double) {
+        self = Point2(x: x + deltaX, y: y + deltaY) //自身更新
+    }
+}
+enum TriStateSwitch {
+    case off, low, high
+    mutating func next() {
+        switch self { //自身更新
+        case .off:
+            self = .low
+        case .low:
+            self = .high
+        case .high:
+            self = .off
+        }
+    }
+}
+var ovenLight = TriStateSwitch.low
+ovenLight.next()
+// ovenLight is now equal to .high
+ovenLight.next()
+// ovenLight is now equal to .off
+class MyPrinter{
+    func main() {
+        printMessage(message: "Hello Swift 3!") // 回傳值非必要可用 @discardableResult 标注
+    }
+    @discardableResult
+    func orderSend(message: String) -> Bool {
+        let outputMessage = "Output : \(message)"
+        print(outputMessage)
+        
+        return outputMessage
+    }
+}
